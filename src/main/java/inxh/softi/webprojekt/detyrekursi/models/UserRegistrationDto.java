@@ -13,7 +13,8 @@ public class UserRegistrationDto {
         this.username = username;
         this.email = email;
         this.password = password;
-    }public UserRegistrationDto() {
+    }
+    public UserRegistrationDto() {
         //TODO Auto-generated constructor stub
     }
     public String getFirstName() {

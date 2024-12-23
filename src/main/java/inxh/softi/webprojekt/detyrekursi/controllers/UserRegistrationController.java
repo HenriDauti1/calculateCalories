@@ -11,7 +11,7 @@ import inxh.softi.webprojekt.detyrekursi.models.UserRegistrationDto;
 import inxh.softi.webprojekt.detyrekursi.service.UserService;
 
 @Controller
-@RequestMapping("/registration")
+@RequestMapping("/register")
 public class UserRegistrationController {
 
     private UserService userService;
@@ -30,13 +30,13 @@ public class UserRegistrationController {
     @GetMapping
     public String showRegistrationForm(Model model){
         model.addAttribute("user", new UserRegistrationDto());
-        return "registration";
+        return "register";
     }
 
     @PostMapping
     public String registerUserAccount(@ModelAttribute("user") UserRegistrationDto registrationDto) {
         userService.save(registrationDto);
-        return "redirect:/registration?success";
+        return "redirect:/register?success";
     }
 
     
