@@ -14,4 +14,5 @@ public interface UserService {
     void deleteUser(Long id);
     User getUserProfile(String identifier);
     boolean authenticateUser(String identifier, String password);
+    boolean doesUserExists(String username);
 }
