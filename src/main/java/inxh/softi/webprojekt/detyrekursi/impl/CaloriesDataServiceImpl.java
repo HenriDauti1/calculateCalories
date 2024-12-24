@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.*;
 
 @Service
@@ -73,6 +74,31 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
             }
         }
         return exceedingDays;
+    }
+    @Override
+    public Map<YearMonth, Integer> getSpendingsExceeding1000(String username) {
+        List<CaloriesData> allData = caloriesDataRepository.findByUsername(username);
+
+        Map<YearMonth, Integer> monthlySpendings = new HashMap<>();
+        for (CaloriesData data : allData) {
+            YearMonth yearMonth = YearMonth.from(data.getDateTime());
+            int price = data.getPrice();
+            if (monthlySpendings.containsKey(yearMonth)) {
+                int currentSpendings = monthlySpendings.get(yearMonth);
+                monthlySpendings.put(yearMonth, currentSpendings + price);
+            } else {
+                monthlySpendings.put(yearMonth, price);
+            }
+        }
+
+        Map<YearMonth, Integer> exceedingMonths = new HashMap<>();
+        for (Map.Entry<YearMonth, Integer> entry : monthlySpendings.entrySet()) {
+            if (entry.getValue() > 1000) {
+                exceedingMonths.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        return exceedingMonths;
     }
 
 }

@@ -3,6 +3,7 @@ package inxh.softi.webprojekt.detyrekursi.service;
 import inxh.softi.webprojekt.detyrekursi.entity.CaloriesData;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,4 +15,5 @@ public interface CaloriesDataService {
     void deleteCaloriesDataById(Long id);
     CaloriesData updateCaloriesData(Long id, CaloriesData caloriesData);
     Map<LocalDate, Integer> getDaysExceeding2500Calories(String username);
+    Map<YearMonth, Integer> getSpendingsExceeding1000(String username);
 }

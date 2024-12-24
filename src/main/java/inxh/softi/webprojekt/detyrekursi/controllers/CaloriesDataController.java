@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +115,19 @@ public class CaloriesDataController {
             return ResponseEntity.ok("No days exceeding 2500 calories found for user: " + username);
         }
         return ResponseEntity.ok(exceedingDays);
+    }
+
+    @GetMapping("/user/{username}/spendings-exceeding-1000")
+    public ResponseEntity<?> getSpendingsExceeding1000(@PathVariable String username) {
+        if (!userService.doesUserExists(username)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with username " + username + " does not exist.");
+        }
+        Map<YearMonth, Integer> exceedingSpendings = caloriesDataService.getSpendingsExceeding1000(username);
+        if (exceedingSpendings.isEmpty()) {
+            return ResponseEntity.ok("No months exceeding 1000 spendings found for user: " + username);
+        }
+        return ResponseEntity.ok(exceedingSpendings);
     }
 
 }
