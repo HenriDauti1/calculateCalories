@@ -112,21 +112,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean authenticateUser(String identifier, String password) {
         User user;
-
-        // Check if the identifier is an email or username
         if (identifier.contains("@")) {
-            // Find user by email
             user = userRepository.findByEmail(identifier);
         } else {
-            // Find user by username
             user = userRepository.findByUsername(identifier);
         }
-
-        // Validate password if user exists
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             return true;
         }
-        return false; // Invalid credentials
+        return false;
     }
 
     @Override
@@ -144,5 +138,10 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("User not found");
         }
         return user;
+    }
+
+    @Override
+    public boolean doesUserExists(String username) {
+        return userRepository.findByUsername(username) != null;
     }
 }
