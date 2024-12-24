@@ -18,6 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/calories")
+@CrossOrigin(value = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class CaloriesDataController {
 
     private final CaloriesDataService caloriesDataService;
