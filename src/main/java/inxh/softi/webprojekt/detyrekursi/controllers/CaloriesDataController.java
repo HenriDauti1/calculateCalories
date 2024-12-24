@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -34,10 +36,14 @@ public class CaloriesDataController {
                     .body("User with username " + username + " does not exist.");
         }
         caloriesData.setUsername(username);
-        caloriesData.setDateTime(LocalDateTime.now());
+        if (caloriesData.getDateTime() == null) {
+            caloriesData.setDateTime(LocalDateTime.now());
+        }
         CaloriesData savedData = caloriesDataService.saveCaloriesData(caloriesData);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(savedData);
     }
+
 
     @GetMapping("/user/{username}")
     public ResponseEntity<?> getCaloriesDataByUsername(@PathVariable String username) {
@@ -95,4 +101,19 @@ public class CaloriesDataController {
         caloriesDataService.deleteCaloriesDataById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Food entry deleted successfully.");
     }
+
+
+    @GetMapping("/user/{username}/exceeding-2500")
+    public ResponseEntity<?> getDaysExceeding2500(@PathVariable String username) {
+        if (!userService.doesUserExists(username)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with username " + username + " does not exist.");
+        }
+        Map<LocalDate, Integer> exceedingDays = caloriesDataService.getDaysExceeding2500Calories(username);
+        if (exceedingDays.isEmpty()) {
+            return ResponseEntity.ok("No days exceeding 2500 calories found for user: " + username);
+        }
+        return ResponseEntity.ok(exceedingDays);
+    }
+
 }

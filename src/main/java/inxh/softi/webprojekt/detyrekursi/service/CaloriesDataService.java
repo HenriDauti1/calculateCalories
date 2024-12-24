@@ -2,17 +2,16 @@ package inxh.softi.webprojekt.detyrekursi.service;
 
 import inxh.softi.webprojekt.detyrekursi.entity.CaloriesData;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface CaloriesDataService {
     CaloriesData saveCaloriesData(CaloriesData caloriesData);
-
     List<CaloriesData> getCaloriesDataByUsername(String username);
-
     Optional<CaloriesData> getCaloriesDataById(Long id);
-
     void deleteCaloriesDataById(Long id);
-
     CaloriesData updateCaloriesData(Long id, CaloriesData caloriesData);
+    Map<LocalDate, Integer> getDaysExceeding2500Calories(String username);
 }

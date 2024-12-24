@@ -6,8 +6,9 @@ import inxh.softi.webprojekt.detyrekursi.repository.CaloriesDataRepository;
 import inxh.softi.webprojekt.detyrekursi.service.CaloriesDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
+
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class CaloriesDataServiceImpl implements CaloriesDataService {
@@ -49,4 +50,29 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
         caloriesData.setId(id);
         return caloriesDataRepository.save(caloriesData);
     }
+
+    @Override
+    public Map<LocalDate, Integer> getDaysExceeding2500Calories(String username) {
+        List<CaloriesData> allData = caloriesDataRepository.findByUsername(username);
+
+        Map<LocalDate, Integer> dailyCalories = new HashMap<>();
+        for (CaloriesData data : allData) {
+            LocalDate date = data.getDateTime().toLocalDate();
+            int calories = data.getCalories();
+            if (dailyCalories.containsKey(date)) {
+                int currentCalories = dailyCalories.get(date);
+                dailyCalories.put(date, currentCalories + calories);
+            } else {
+                dailyCalories.put(date, calories);
+            }
+        }
+        Map<LocalDate, Integer> exceedingDays = new HashMap<>();
+        for (Map.Entry<LocalDate, Integer> entry : dailyCalories.entrySet()) {
+            if (entry.getValue() > 2500) {
+                exceedingDays.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return exceedingDays;
+    }
+
 }
