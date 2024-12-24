@@ -16,4 +16,7 @@ public interface CaloriesDataService {
     CaloriesData updateCaloriesData(Long id, CaloriesData caloriesData);
     Map<LocalDate, Integer> getDaysExceeding2500Calories(String username);
     Map<YearMonth, Integer> getSpendingsExceeding1000(String username);
+    Map<LocalDate, Integer> getTotalCaloriesPerDayForWeek(String username);
+    int countDaysExceedingThresholdTotal(String username);
+    int calculateTotalExpenditureForWeek(String username);
 }

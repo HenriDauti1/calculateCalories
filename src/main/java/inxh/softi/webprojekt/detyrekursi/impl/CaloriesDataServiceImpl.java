@@ -7,8 +7,8 @@ import inxh.softi.webprojekt.detyrekursi.service.CaloriesDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
+import java.time.*;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 @Service
@@ -90,7 +90,6 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
                 monthlySpendings.put(yearMonth, price);
             }
         }
-
         Map<YearMonth, Integer> exceedingMonths = new HashMap<>();
         for (Map.Entry<YearMonth, Integer> entry : monthlySpendings.entrySet()) {
             if (entry.getValue() > 1000) {
@@ -100,5 +99,72 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
 
         return exceedingMonths;
     }
+
+
+    @Override
+    public Map<LocalDate, Integer> getTotalCaloriesPerDayForWeek(String username) {
+        LocalDate currentDate = LocalDate.now();
+        // Fillimi i javes - E hene, fundi i javes e diele
+        LocalDate startOfWeek = currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate endOfWeek = startOfWeek.plusDays(6);
+
+        // I bejme konvert LocalDate ne LocalDateTime
+        LocalDateTime startOfWeekDateTime = startOfWeek.atStartOfDay();
+        LocalDateTime endOfWeekDateTime = endOfWeek.atTime(LocalTime.MAX);
+
+        List<CaloriesData> allData = caloriesDataRepository.findByUsernameAndDateRange(username, startOfWeekDateTime, endOfWeekDateTime);
+        Map<LocalDate, Integer> dailyCalories = new HashMap<>();
+
+        for (CaloriesData data : allData) {
+            LocalDate date = data.getDateTime().toLocalDate();
+            dailyCalories.put(date, dailyCalories.getOrDefault(date, 0) + data.getCalories());
+        }
+
+        for (LocalDate date = startOfWeek; !date.isAfter(endOfWeek); date = date.plusDays(1)) {
+            dailyCalories.putIfAbsent(date, 0);
+        }
+        return dailyCalories;
+    }
+
+    public int countDaysExceedingThresholdTotal(String username) {
+        final int threshold = 2500;
+        List<CaloriesData> allData = caloriesDataRepository.findByUsername(username);
+        Map<LocalDate, Integer> dailyCalories = new HashMap<>();
+
+        for (CaloriesData data : allData) {
+            LocalDate date = data.getDateTime().toLocalDate();
+
+            if (!dailyCalories.containsKey(date)) {
+                dailyCalories.put(date, 0);
+            }
+            int totalCaloriesForDay = dailyCalories.get(date) + data.getCalories();
+            dailyCalories.put(date, totalCaloriesForDay);
+        }
+        int count = 0;
+        for (Integer calories : dailyCalories.values()) {
+            if (calories > threshold) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+
+    @Override
+    public int calculateTotalExpenditureForWeek(String username) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime startOfWeek = currentDateTime.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                .toLocalDate().atStartOfDay();
+        LocalDateTime endOfWeek = startOfWeek.plusDays(6).withHour(23).withMinute(59).withSecond(59);
+        List<CaloriesData> allData = caloriesDataRepository.findByUsernameAndDateRange(username, startOfWeek, endOfWeek);
+
+        int totalExpenditure = 0;
+
+        for (CaloriesData data : allData) {
+            totalExpenditure += data.getPrice();
+        }
+        return totalExpenditure;
+    }
+
 
 }

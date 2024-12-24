@@ -130,4 +130,41 @@ public class CaloriesDataController {
         return ResponseEntity.ok(exceedingSpendings);
     }
 
+    @GetMapping("/user/{username}/total-calories-week")
+    public ResponseEntity<?> getTotalCaloriesPerDayForWeek(@PathVariable String username) {
+        if (!userService.doesUserExists(username)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with username " + username + " does not exist.");
+        }
+
+        Map<LocalDate, Integer> totalCaloriesForWeek = caloriesDataService.getTotalCaloriesPerDayForWeek(username);
+
+        return ResponseEntity.ok(totalCaloriesForWeek);
+    }
+
+
+    @GetMapping("/user/{username}/exceed-calorie-threshold-total")
+    public ResponseEntity<?> getExceedingDaysCountTotal(@PathVariable String username) {
+        if (!userService.doesUserExists(username)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with username " + username + " does not exist.");
+        }
+        int exceedingDaysCount = caloriesDataService.countDaysExceedingThresholdTotal(username);
+        return ResponseEntity.ok(exceedingDaysCount);
+    }
+
+    @GetMapping("/user/{username}/total-expenditure-week")
+    public ResponseEntity<?> getTotalExpenditureForWeek(@PathVariable String username) {
+        if (!userService.doesUserExists(username)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with username " + username + " does not exist.");
+        }
+        int totalExpenditure = caloriesDataService.calculateTotalExpenditureForWeek(username);
+
+        return ResponseEntity.ok(totalExpenditure);
+    }
+
+
+
+
 }
