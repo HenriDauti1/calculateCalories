@@ -12,4 +12,6 @@ public interface UserService {
     List<UserResponseDTO> getAllUsers();
     UserResponseDTO updateUser(Long id, User userDetails);
     void deleteUser(Long id);
+    User getUserProfile(String identifier);
+    boolean authenticateUser(String identifier, String password);
 }
