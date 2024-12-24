@@ -28,6 +28,11 @@ h2 {
     margin-bottom: 20px;
     color: #006716;
 }
+.form-row{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
 
 .form-group {
     margin-bottom: 15px;
@@ -81,7 +86,7 @@ button:hover {
 
 .login-link {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .login-link a {
