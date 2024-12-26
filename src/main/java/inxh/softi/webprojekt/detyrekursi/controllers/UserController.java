@@ -53,28 +53,25 @@ public class UserController {
                     .body(Map.of("message", "Invalid username or password"));
         }
     }
-    @GetMapping("/")
-    public String showLoginPage() {
-        return "login";
-    }
 
-    @GetMapping("/api/auth/user")
-    public ResponseEntity<Map<String, Object>> getCurrentUser(HttpSession session) {
-        String username = (String) session.getAttribute("username");
-        String role = (String) session.getAttribute("role");
-        String email = (String) session.getAttribute("email");
 
-        if (username != null && role != null) {
-            Map<String, Object> userInfo = new HashMap<>();
-            userInfo.put("username", username);
-            userInfo.put("role", role);
-            userInfo.put("email", email);
-            return ResponseEntity.ok(userInfo);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "No user is logged in"));
-        }
-    }
+//    @GetMapping("/api/auth/user")
+//    public ResponseEntity<Map<String, Object>> getCurrentUser(HttpSession session) {
+//        String username = (String) session.getAttribute("username");
+//        String role = (String) session.getAttribute("role");
+//        String email = (String) session.getAttribute("email");
+//
+//        if (username != null && role != null) {
+//            Map<String, Object> userInfo = new HashMap<>();
+//            userInfo.put("username", username);
+//            userInfo.put("role", role);
+//            userInfo.put("email", email);
+//            return ResponseEntity.ok(userInfo);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                    .body(Map.of("message", "No user is logged in"));
+//        }
+//    }
 
 
     @PostMapping("/users/register")
