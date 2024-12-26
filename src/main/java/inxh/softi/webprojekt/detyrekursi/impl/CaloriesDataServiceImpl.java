@@ -32,11 +32,13 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
 
     @Override
     public Optional<CaloriesData> getCaloriesDataById(Long id) {
+
         return caloriesDataRepository.findById(id);
     }
 
     @Override
     public void deleteCaloriesDataById(Long id) {
+
         caloriesDataRepository.deleteById(id);
     }
 
@@ -164,6 +166,14 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
             totalExpenditure += data.getPrice();
         }
         return totalExpenditure;
+    }
+
+    @Override
+    public List<CaloriesData> filterCaloriesDataByDateRange(String username, LocalDateTime fromDate, LocalDateTime toDate) {
+        if (fromDate.isAfter(toDate)) {
+            throw new IllegalArgumentException("fromDate must be before or equal to toDate.");
+        }
+        return caloriesDataRepository.findByUsernameAndDateRange(username, fromDate, toDate);
     }
 
 

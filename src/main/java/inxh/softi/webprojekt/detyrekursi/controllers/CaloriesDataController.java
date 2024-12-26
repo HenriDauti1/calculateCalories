@@ -3,6 +3,7 @@ package inxh.softi.webprojekt.detyrekursi.controllers;
 import inxh.softi.webprojekt.detyrekursi.entity.CaloriesData;
 import inxh.softi.webprojekt.detyrekursi.service.CaloriesDataService;
 import inxh.softi.webprojekt.detyrekursi.service.UserService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -163,6 +164,23 @@ public class CaloriesDataController {
         int totalExpenditure = caloriesDataService.calculateTotalExpenditureForWeek(username);
 
         return ResponseEntity.ok(totalExpenditure);
+    }
+
+    @GetMapping("/user/{username}/filter-calories-data")
+    public ResponseEntity<?> getCaloriesDataByDate(
+            @PathVariable String username,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate){
+        if (!userService.doesUserExists(username)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with username " + username + " does not exist.");
+        }
+        try {
+            List<CaloriesData> caloriesData = caloriesDataService.filterCaloriesDataByDateRange(username, fromDate, toDate);
+            return ResponseEntity.ok(caloriesData);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
     }
 
 
