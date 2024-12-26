@@ -66,7 +66,26 @@
         } catch (error) {
             errorMessage.textContent = "An unexpected error occurred.";
             errorMessage.style.display = "block";
-        }
+
+
+                async function checkUserSession() {
+                try {
+                const response = await fetch('/api/auth/user');
+                if (response.ok) {
+                const userInfo = await response.json();
+                alert(`Logged in as ${userInfo.username} (${userInfo.role})`);
+            } else {
+                console.log("No user logged in.");
+            }
+            } catch (error) {
+                console.error("Error checking session:", error);
+            }
+            }
+
+                checkUserSession();
+
+
+}
     });
 
 </script>
