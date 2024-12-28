@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="/static/login.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
 <div class="login-container">
@@ -58,7 +58,7 @@
             if (response.ok) {
                 const result = await response.json();
                 alert(`Welcome, ${result.role}!`);
-                window.location.href = "foodentry.html";
+                window.location.href = "user.html";
             } else {
                 const result = await response.json();
                 errorMessage.textContent = result.message || "Invalid username or password.";
@@ -67,24 +67,6 @@
         } catch (error) {
             errorMessage.textContent = "An unexpected error occurred.";
             errorMessage.style.display = "block";
-
-
-            //     async function checkUserSession() {
-            //     try {
-            //     const response = await fetch('/api/auth/user');
-            //     if (response.ok) {
-            //     const userInfo = await response.json();
-            //     alert(`Logged in as ${userInfo.username} (${userInfo.role})`);
-            // } else {
-            //     console.log("No user logged in.");
-            // }
-            // } catch (error) {
-            //     console.error("Error checking session:", error);
-            // }
-            // }
-            //
-            //     checkUserSession();
-
 
 }
     });
