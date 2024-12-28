@@ -77,8 +77,8 @@
         <h1>Custom Period Analysis</h1>
       </div>
       <div class="date-range">
-        <input type="date" id="startDate">
-        <input type="date" id="endDate">
+       From<input  type="date" id="startDate">
+        To<input type="date" id="endDate">
         <button class="add-btn" onclick="filterByDate()">Filter</button>
       </div>
       <div class="card">
@@ -112,7 +112,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <script>
-  // Navigimi neper faqe
+  // Navigimi
   function showSection(sectionId) {
     document.querySelectorAll('.content-section').forEach(section => {
       section.classList.remove('active');
@@ -128,35 +128,7 @@
     document.getElementById('modal').style.display = 'none';
   }
 
-  // Grafiket
-  const dashboardCtx = document.getElementById('dashboardChart').getContext('2d');
-  new Chart(dashboardCtx, {
-    type: 'line',
-    data: {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      datasets: [{
-        label: 'Daily Calories',
-        data: [2300, 2600, 2100, 2800, 2400, 2200, 2700],
-        borderColor: '#1f3c0e',
-        tension: 0.2
-      }]
-    },
-    options: {
-      responsive: true
-    }
-  });
-  const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
-  new Chart(weeklyCtx, {
-    type: 'bar',
-    data: {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      datasets: [{
-        label: 'Calories',
-        data: [2300, 2600, 2100, 2800, 2400, 2200, 2700],
-        backgroundColor: '#70a551'
-      }]
-    }
-  });
+
   //Shtimi i ushqimeve
   document.getElementById('foodForm').onsubmit = function(e) {
     e.preventDefault();
@@ -169,27 +141,25 @@
     updateFoodEntries(entry);
     closeModal();
     this.reset();
+    const username = 'username';
+    fetch(`http://localhost:8080/calories/add?username=${username}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + btoa("Admin" + ':' + "Test123!")
+      },
+      body: JSON.stringify(entry)
+    })
+            .then(response => response.json())
+            .then(data => {
+              updateFoodEntries(data);
+              closeModal();
+              document.getElementById('foodForm').reset();
+            })
+            .catch(error => {
+              console.error('Error adding food entry:', error);
+            });
   };
-  function updateFoodEntries(entry) {
-    const container = document.getElementById('foodEntries');
-    const div = document.createElement('div');
-    div.className = 'food-entry';
-    div.innerHTML = `
-                <div>
-                    <div>${entry.name}</div>
-                    <div style="color: #666; font-size: 0.9em">
-                        ${entry.date.toLocaleDateString()}
-                    </div>
-                </div>
-                <div>
-                    <div>${entry.calories} cal</div>
-                    <div style="color: #666; font-size: 0.9em">
-                        €${entry.price.toFixed(2)}
-                    </div>
-                </div>
-            `;
-    container.insertBefore(div, container.firstChild);
-  }
   function filterByDate() {
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
@@ -208,13 +178,109 @@
       }
     });
   }
-
-  // Close modal when clicking outside
   window.onclick = function(event) {
     if (event.target == document.getElementById('modal')) {
       closeModal();
     }
   }
+  function updateFoodEntries(entry) {
+    const container = document.getElementById('foodEntries');
+    const div = document.createElement('div');
+    div.className = 'food-entry';
+    div.innerHTML = `
+        <div>
+            <div>${entry.name}</div>
+            <div style="color: #666; font-size: 0.9em">
+                ${new Date(entry.date).toLocaleDateString()}
+            </div>
+        </div>
+        <div>
+            <div>${entry.calories} cal</div>
+            <div style="color: #666; font-size: 0.9em">
+                €${entry.price.toFixed(2)}
+            </div>
+        </div>
+    `;
+    container.insertBefore(div, container.firstChild);
+  }
+  function getCaloriesData(username) {
+    fetch(`http://localhost:8080/calories/user/${username}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Basic ' + btoa("Admin" + ':' + "Test123!")
+      }
+    })
+            .then(response => response.json())
+            .then(data => {
+              updateDashboardStats(data);
+            })
+            .catch(error => {
+              console.error('Error fetching calories data:', error);
+            });
+  }
+  // Grafiket
+  const dashboardCtx = document.getElementById('dashboardChart').getContext('2d');
+  new Chart(dashboardCtx, {
+    type: 'line',
+    data: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{
+        label: 'Daily Calories',
+        data: [2300, 2600, 2100, 2800, 2400, 2200, 2700],
+        borderColor: '#2c314a',
+        tension: 0.2
+      }]
+    },
+    options: {
+      responsive: true
+    }
+  });
+  function updateDashboardStats(data) {
+    const todayCalories = data.find(entry => new Date(entry.dateTime).toLocaleDateString() === new Date().toLocaleDateString());
+    const weeklyCalories = data.filter(entry => new Date(entry.dateTime) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+
+    const dailyCalories = todayCalories ? todayCalories.calories : 0;
+    const weeklyAverage = weeklyCalories.length ? weeklyCalories.reduce((acc, entry) => acc + entry.calories, 0) / weeklyCalories.length : 0;
+
+
+    document.querySelector('.stat-value').innerText = `${dailyCalories} cal`;
+    document.querySelectorAll('.stat-value')[1].innerText = `${weeklyAverage.toFixed(0)} cal`;
+  }
+
+  function getWeeklyCaloriesReport(username) {
+    fetch(`http://localhost:8080/calories/user/${username}/total-calories-week`, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Basic ' + btoa("Admin" + ':' + "Test123!")
+      }
+    })
+            .then(response => response.json())
+            .then(data => {
+              updateWeeklyReport(data);  // Update the weekly report
+            })
+            .catch(error => {
+              console.error('Error fetching weekly report:', error);
+            });
+  }
+
+  function updateWeeklyReport(data) {
+    const labels = Object.keys(data);
+    const caloriesData = Object.values(data);
+
+    const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+    new Chart(weeklyCtx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Calories',
+          data: caloriesData,
+          backgroundColor: '#493333'
+        }]
+      }
+    });
+  }
+
 </script>
 </body>
 </html>
