@@ -5,8 +5,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 @Entity
+@Builder
 @Table(name = "users", uniqueConstraints =  @UniqueConstraint(columnNames = "email"))
 public class User {
     
@@ -44,6 +46,7 @@ public class User {
     private String confirmPassword;
 
     @Column(name = "role", nullable = false)
+    @Builder.Default
     private String role = "ROLE_USER";
 
     public User(){}
@@ -56,6 +59,17 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role != null ? role : "ROLE_USER";
+    }
+
+    public User(Long id, String firstName, String lastName, String username, String email, String password, String confirmPassword, String role) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.confirmPassword = confirmPassword;
         this.role = role != null ? role : "ROLE_USER";
     }
 
