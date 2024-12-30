@@ -22,4 +22,5 @@ public interface CaloriesDataService {
     int calculateTotalExpenditureForWeek(String username);
 
     List<CaloriesData> filterCaloriesDataByDateRange(String username, LocalDateTime fromDate, LocalDateTime toDate);
+    Map<String, Object> getAdminReport();
 }

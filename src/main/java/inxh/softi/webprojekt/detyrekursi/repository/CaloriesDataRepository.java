@@ -16,4 +16,23 @@ public interface CaloriesDataRepository extends JpaRepository<CaloriesData, Long
             @Param("username") String username,
             @Param("startOfWeek") LocalDateTime startOfWeek,
             @Param("endOfWeek") LocalDateTime endOfWeek);
+
+    @Query("SELECT COUNT(c) FROM CaloriesData c WHERE c.dateTime BETWEEN :startDate AND :endDate")
+    int countEntriesByDateRange(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT c FROM CaloriesData c WHERE c.dateTime BETWEEN :startDate AND :endDate")
+    List<CaloriesData> findByDateRange(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT c.username FROM CaloriesData c " +
+            "WHERE c.dateTime BETWEEN :startDate AND :endDate " +
+            "GROUP BY c.username " +
+            "HAVING SUM(c.price) > 1000")
+    List<String> findUsersExceedingMonthlyLimit(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
+
 }
