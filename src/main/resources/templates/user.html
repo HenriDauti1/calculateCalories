@@ -112,7 +112,9 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <script>
-  // Navigimi
+  const API_BASE_URL = "http://localhost:8080";
+
+
   function showSection(sectionId) {
     document.querySelectorAll('.content-section').forEach(section => {
       section.classList.remove('active');
@@ -120,78 +122,64 @@
     document.getElementById(sectionId + '-section').classList.add('active');
   }
 
+
   function openModal() {
     document.getElementById('modal').style.display = 'block';
   }
+
 
   function closeModal() {
     document.getElementById('modal').style.display = 'none';
   }
 
 
-  //Shtimi i ushqimeve
   document.getElementById('foodForm').onsubmit = function(e) {
     e.preventDefault();
     const entry = {
-      name: document.getElementById('foodName').value,
+      username: 'user', // You should dynamically get the username here
+      dateTime: new Date().toISOString(),
+      foodName: document.getElementById('foodName').value,
       calories: parseInt(document.getElementById('calories').value),
       price: parseFloat(document.getElementById('price').value),
-      date: new Date()
     };
-    updateFoodEntries(entry);
-    closeModal();
-    this.reset();
-    const username = 'username';
-    fetch(`http://localhost:8080/calories/add?username=${username}`, {
+
+    fetch(`${API_BASE_URL}/calories/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + btoa("Admin" + ':' + "Test123!")
       },
-      body: JSON.stringify(entry)
+      body: JSON.stringify(entry),
     })
-            .then(response => response.json())
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+
+              return response.json().catch(() => {
+                throw new Error("Invalid JSON response");
+              });
+            })
             .then(data => {
               updateFoodEntries(data);
               closeModal();
-              document.getElementById('foodForm').reset();
+              this.reset();
             })
             .catch(error => {
               console.error('Error adding food entry:', error);
+              alert('Failed to add food entry. Please try again.');
             });
   };
-  function filterByDate() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    // Implement date filtering logic here
-    const customCtx = document.getElementById('customChart').getContext('2d');
-    new Chart(customCtx, {
-      type: 'line',
-      data: {
-        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
-        datasets: [{
-          label: 'Calories',
-          data: [2400, 2200, 2600, 2300, 2500],
-          borderColor: '#3b82f6',
-          tension: 0.1
-        }]
-      }
-    });
-  }
-  window.onclick = function(event) {
-    if (event.target == document.getElementById('modal')) {
-      closeModal();
-    }
-  }
+
+
   function updateFoodEntries(entry) {
     const container = document.getElementById('foodEntries');
     const div = document.createElement('div');
     div.className = 'food-entry';
     div.innerHTML = `
         <div>
-            <div>${entry.name}</div>
+            <div>${entry.foodName}</div>
             <div style="color: #666; font-size: 0.9em">
-                ${new Date(entry.date).toLocaleDateString()}
+                ${new Date(entry.dateTime).toLocaleDateString()}
             </div>
         </div>
         <div>
@@ -203,84 +191,87 @@
     `;
     container.insertBefore(div, container.firstChild);
   }
-  function getCaloriesData(username) {
-    fetch(`http://localhost:8080/calories/user/${username}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Basic ' + btoa("Admin" + ':' + "Test123!")
-      }
-    })
+
+  function getDashboardData() {
+    fetch(`${API_BASE_URL}/calories/dashboard`)
             .then(response => response.json())
             .then(data => {
               updateDashboardStats(data);
             })
             .catch(error => {
-              console.error('Error fetching calories data:', error);
+              console.error('Error fetching dashboard data:', error);
             });
   }
-  // Grafiket
-  const dashboardCtx = document.getElementById('dashboardChart').getContext('2d');
-  new Chart(dashboardCtx, {
-    type: 'line',
-    data: {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      datasets: [{
-        label: 'Daily Calories',
-        data: [2300, 2600, 2100, 2800, 2400, 2200, 2700],
-        borderColor: '#2c314a',
-        tension: 0.2
-      }]
-    },
-    options: {
-      responsive: true
-    }
-  });
+
   function updateDashboardStats(data) {
-    const todayCalories = data.find(entry => new Date(entry.dateTime).toLocaleDateString() === new Date().toLocaleDateString());
-    const weeklyCalories = data.filter(entry => new Date(entry.dateTime) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+    const todayCalories = data.todayCalories || 0;
+    const weeklyAverage = data.weeklyAverage || 0;
+    const monthlySpending = data.monthlySpending || 0;
 
-    const dailyCalories = todayCalories ? todayCalories.calories : 0;
-    const weeklyAverage = weeklyCalories.length ? weeklyCalories.reduce((acc, entry) => acc + entry.calories, 0) / weeklyCalories.length : 0;
-
-
-    document.querySelector('.stat-value').innerText = `${dailyCalories} cal`;
+    document.querySelectorAll('.stat-value')[0].innerText = `${todayCalories} cal`;
     document.querySelectorAll('.stat-value')[1].innerText = `${weeklyAverage.toFixed(0)} cal`;
+    document.querySelectorAll('.stat-value')[2].innerText = `€${monthlySpending.toFixed(2)}`;
   }
 
-  function getWeeklyCaloriesReport(username) {
-    fetch(`http://localhost:8080/calories/user/${username}/total-calories-week`, {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Basic ' + btoa("Admin" + ':' + "Test123!")
-      }
-    })
+  function filterByDate() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    fetch(`${API_BASE_URL}/calories/filter?startDate=${startDate}&endDate=${endDate}`)
             .then(response => response.json())
             .then(data => {
-              updateWeeklyReport(data);  // Update the weekly report
+              const customCtx = document.getElementById('customChart').getContext('2d');
+              new Chart(customCtx, {
+                type: 'line',
+                data: {
+                  labels: data.map(entry => new Date(entry.dateTime).toLocaleDateString()),
+                  datasets: [{
+                    label: 'Calories',
+                    data: data.map(entry => entry.calories),
+                    borderColor: '#3b82f6',
+                    tension: 0.1,
+                  }],
+                },
+              });
+            })
+            .catch(error => {
+              console.error('Error filtering data by date:', error);
+            });
+  }
+  function getWeeklyReport() {
+    fetch(`${API_BASE_URL}/calories/weekly-report`)
+            .then(response => response.json())
+            .then(data => {
+              const labels = Object.keys(data);
+              const caloriesData = Object.values(data);
+
+              const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+              new Chart(weeklyCtx, {
+                type: 'bar',
+                data: {
+                  labels: labels,
+                  datasets: [{
+                    label: 'Calories',
+                    data: caloriesData,
+                    backgroundColor: '#493333',
+                  }],
+                },
+              });
             })
             .catch(error => {
               console.error('Error fetching weekly report:', error);
             });
   }
 
-  function updateWeeklyReport(data) {
-    const labels = Object.keys(data);
-    const caloriesData = Object.values(data);
-
-    const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
-    new Chart(weeklyCtx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Calories',
-          data: caloriesData,
-          backgroundColor: '#493333'
-        }]
-      }
-    });
-  }
-
+  window.onload = function() {
+    getDashboardData();
+    getWeeklyReport();
+  };
+  window.onclick = function(event) {
+    if (event.target == document.getElementById('modal')) {
+      closeModal();
+    }
+  };
 </script>
 </body>
 </html>

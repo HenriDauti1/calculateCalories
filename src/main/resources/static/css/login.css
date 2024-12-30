@@ -1,3 +1,7 @@
+*{
+    background-image: url("static/img/background.jpg");
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: #eeffab;
