@@ -14,12 +14,17 @@
 .sidebar {
     width: 244px;
     background-color: rgb(131, 174, 106);
-    font-size:larger;
+    font-size: larger;
     color: #142443;
     padding: 20px;
     border-radius: 0px;
     margin-right: 0px;
+    background-image: url("static/img/background_sidebar.png");
+    background-size: cover; /* Adjust the image size to cover the entire area */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    background-position: center; /* Center the image within the sidebar */
 }
+
 .sidebar-menu {
     list-style: none;
     margin-top: 25px;
