@@ -3,6 +3,7 @@ package inxh.softi.webprojekt.detyrekursi.service;
 import inxh.softi.webprojekt.detyrekursi.entity.CaloriesData;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
@@ -19,4 +20,6 @@ public interface CaloriesDataService {
     Map<LocalDate, Integer> getTotalCaloriesPerDayForWeek(String username);
     int countDaysExceedingThresholdTotal(String username);
     int calculateTotalExpenditureForWeek(String username);
+
+    List<CaloriesData> filterCaloriesDataByDateRange(String username, LocalDateTime fromDate, LocalDateTime toDate);
 }
