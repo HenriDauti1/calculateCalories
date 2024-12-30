@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -183,7 +184,16 @@ public class CaloriesDataController {
         }
     }
 
-
-
+    @GetMapping("/admin/report")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getAdminReport() {
+        try {
+            Map<String, Object> report = caloriesDataService.getAdminReport();
+            return ResponseEntity.ok(report);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while generating the report: " + ex.getMessage());
+        }
+    }
 
 }
