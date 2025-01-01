@@ -182,7 +182,7 @@
   }
 
   function getCaloriesData() {
-    fetch(`${API_BASE_URL}/user/user`)
+    fetch(`${API_BASE_URL}/user/username`)
             .then(response => response.text())
             .then(data => {
               document.getElementById('todayCalories').innerText = `${data.todayCalories} cal`;
