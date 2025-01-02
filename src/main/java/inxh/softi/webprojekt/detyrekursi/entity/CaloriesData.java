@@ -2,6 +2,7 @@ package inxh.softi.webprojekt.detyrekursi.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -33,7 +34,8 @@ public class CaloriesData {
     @Digits(integer = 8, fraction = 0, message = "Price must be a numeric value with a maximum of 8 digits")
     private int price;
 
-    public CaloriesData() {}
+    public CaloriesData() {
+    }
 
     public CaloriesData(String username, LocalDateTime dateTime, String foodName, int calories, int price) {
         this.username = username;
@@ -42,6 +44,7 @@ public class CaloriesData {
         this.calories = calories;
         this.price = price;
     }
+
     public Long getId() {
         return id;
     }

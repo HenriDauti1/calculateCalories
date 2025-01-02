@@ -11,16 +11,28 @@ import java.util.Optional;
 
 public interface CaloriesDataService {
     CaloriesData saveCaloriesData(CaloriesData caloriesData);
+
     List<CaloriesData> getCaloriesDataByUsername(String username);
+
     Optional<CaloriesData> getCaloriesDataById(Long id);
+
     void deleteCaloriesDataById(Long id);
+
     CaloriesData updateCaloriesData(Long id, CaloriesData caloriesData);
+
     Map<LocalDate, Integer> getDaysExceeding2500Calories(String username);
+
     Map<YearMonth, Integer> getSpendingsExceeding1000(String username);
+
     Map<LocalDate, Integer> getTotalCaloriesPerDayForWeek(String username);
+
     int countDaysExceedingThresholdTotal(String username);
+
     int calculateTotalExpenditureForWeek(String username);
 
     List<CaloriesData> filterCaloriesDataByDateRange(String username, LocalDateTime fromDate, LocalDateTime toDate);
+
     Map<String, Object> getAdminReport();
+
+    List<CaloriesData> getAllCaloriesData();
 }

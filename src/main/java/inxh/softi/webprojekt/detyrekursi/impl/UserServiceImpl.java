@@ -45,27 +45,17 @@ public class UserServiceImpl implements UserService {
 
     private void validatePassword(String password) {
         if (!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$")) {
-            throw new IllegalArgumentException(
-                    "Password must be at least 6 characters long, contain one uppercase letter, " +
-                            "one lowercase letter, one digit, and one special character."
-            );
+            throw new IllegalArgumentException("Password must be at least 6 characters long, contain one uppercase letter, " + "one lowercase letter, one digit, and one special character.");
         }
     }
 
     private UserResponseDTO convertToUserResponseDTO(User user) {
-        return new UserResponseDTO(
-                user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getUsername(),
-                user.getEmail()
-        );
+        return new UserResponseDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
     }
 
     @Override
     public UserResponseDTO getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("User not found with id: " + id));
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
         return convertToUserResponseDTO(user);
     }
 
@@ -81,8 +71,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO updateUser(Long id, User userDetails) {
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("User not found with id: " + id));
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
 
         user.setFirstName(userDetails.getFirstName());
         user.setLastName(userDetails.getLastName());
@@ -127,7 +116,6 @@ public class UserServiceImpl implements UserService {
     public User getUserProfile(String identifier) {
         User user;
 
-        // Check if the identifier is an email or username
         if (identifier.contains("@")) {
             user = userRepository.findByEmail(identifier);
         } else {

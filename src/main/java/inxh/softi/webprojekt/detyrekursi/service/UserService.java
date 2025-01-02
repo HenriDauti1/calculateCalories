@@ -9,11 +9,18 @@ import java.util.List;
 
 public interface UserService {
     UserResponseDTO createUser(User user);
+
     UserResponseDTO getUserById(Long id);
+
     List<UserResponseDTO> getAllUsers();
+
     UserResponseDTO updateUser(Long id, User userDetails);
+
     void deleteUser(Long id);
+
     User getUserProfile(String identifier);
+
     boolean authenticateUser(String identifier, String password);
+
     boolean doesUserExists(String username);
 }

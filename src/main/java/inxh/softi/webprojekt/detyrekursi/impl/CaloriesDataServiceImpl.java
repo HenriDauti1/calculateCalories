@@ -4,7 +4,6 @@ import inxh.softi.webprojekt.detyrekursi.entity.CaloriesData;
 import inxh.softi.webprojekt.detyrekursi.exception.CaloriesDataNotFoundException;
 import inxh.softi.webprojekt.detyrekursi.repository.CaloriesDataRepository;
 import inxh.softi.webprojekt.detyrekursi.service.CaloriesDataService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -45,7 +44,7 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
     @Override
     public CaloriesData updateCaloriesData(Long id, CaloriesData caloriesData) {
         Optional<CaloriesData> existingCaloriesData = caloriesDataRepository.findById(id);
-        
+
         if (existingCaloriesData.isEmpty()) {
             throw new CaloriesDataNotFoundException(id);
         }
@@ -77,6 +76,7 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
         }
         return exceedingDays;
     }
+
     @Override
     public Map<YearMonth, Integer> getSpendingsExceeding1000(String username) {
         List<CaloriesData> allData = caloriesDataRepository.findByUsername(username);
@@ -155,8 +155,7 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
     @Override
     public int calculateTotalExpenditureForWeek(String username) {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        LocalDateTime startOfWeek = currentDateTime.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-                .toLocalDate().atStartOfDay();
+        LocalDateTime startOfWeek = currentDateTime.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).toLocalDate().atStartOfDay();
         LocalDateTime endOfWeek = startOfWeek.plusDays(6).withHour(23).withMinute(59).withSecond(59);
         List<CaloriesData> allData = caloriesDataRepository.findByUsernameAndDateRange(username, startOfWeek, endOfWeek);
 
@@ -217,7 +216,9 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
         return report;
     }
 
-
-
+    @Override
+    public List<CaloriesData> getAllCaloriesData() {
+        return caloriesDataRepository.findAll();
+    }
 
 }

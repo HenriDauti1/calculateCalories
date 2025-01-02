@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,12 +46,9 @@ public class UserController {
             responseBody.put("role", userRole);
             responseBody.put("email", user.getEmail());
 
-            return ResponseEntity.ok()
-                    .header("X-User-Role", userRole)
-                    .body(responseBody);
+            return ResponseEntity.ok().header("X-User-Role", userRole).body(responseBody);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "Invalid username or password"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid username or password"));
         }
     }
 

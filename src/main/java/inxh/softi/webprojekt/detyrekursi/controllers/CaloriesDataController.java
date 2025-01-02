@@ -36,8 +36,7 @@ public class CaloriesDataController {
     @PostMapping("/add")
     public ResponseEntity<?> addCaloriesData(@RequestBody CaloriesData caloriesData, @RequestParam String username) {
         if (!userService.doesUserExists(username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User with username " + username + " does not exist.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with username " + username + " does not exist.");
         }
         caloriesData.setUsername(username);
         if (caloriesData.getDateTime() == null) {
@@ -52,12 +51,18 @@ public class CaloriesDataController {
     @GetMapping("/user/{username}")
     public ResponseEntity<?> getCaloriesDataByUsername(@PathVariable String username) {
         if (!userService.doesUserExists(username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User with username " + username + " does not exist.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with username " + username + " does not exist.");
         }
         List<CaloriesData> data = caloriesDataService.getCaloriesDataByUsername(username);
         return ResponseEntity.ok(data);
     }
+
+    @GetMapping("/data")
+    public ResponseEntity<?> getAllCaloriesData() {
+        List<CaloriesData> data = caloriesDataService.getAllCaloriesData();
+        return ResponseEntity.ok(data);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getCaloriesDataById(@PathVariable Long id) {
@@ -75,8 +80,7 @@ public class CaloriesDataController {
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateCaloriesData(@PathVariable Long id, @RequestBody CaloriesData caloriesData, @RequestParam String username) {
         if (!userService.doesUserExists(username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User with username " + username + " does not exist.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with username " + username + " does not exist.");
         }
 
         CaloriesData existingData = caloriesDataService.getCaloriesDataById(id).orElse(null);
@@ -94,8 +98,7 @@ public class CaloriesDataController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteCaloriesData(@PathVariable Long id, @RequestParam String username) {
         if (!userService.doesUserExists(username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User with username " + username + " does not exist.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with username " + username + " does not exist.");
         }
         CaloriesData existingData = caloriesDataService.getCaloriesDataById(id).orElse(null);
         if (existingData == null) {
@@ -110,8 +113,7 @@ public class CaloriesDataController {
     @GetMapping("/user/{username}/exceeding-2500")
     public ResponseEntity<?> getDaysExceeding2500(@PathVariable String username) {
         if (!userService.doesUserExists(username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User with username " + username + " does not exist.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with username " + username + " does not exist.");
         }
         Map<LocalDate, Integer> exceedingDays = caloriesDataService.getDaysExceeding2500Calories(username);
         if (exceedingDays.isEmpty()) {
@@ -123,12 +125,11 @@ public class CaloriesDataController {
     @GetMapping("/user/{username}/spendings-exceeding-1000")
     public ResponseEntity<?> getSpendingsExceeding1000(@PathVariable String username) {
         if (!userService.doesUserExists(username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User with username " + username + " does not exist.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with username " + username + " does not exist.");
         }
         Map<YearMonth, Integer> exceedingSpendings = caloriesDataService.getSpendingsExceeding1000(username);
         if (exceedingSpendings.isEmpty()) {
-            return ResponseEntity.ok("No months exceeding 1000 spendings found for user: " + username);
+            return ResponseEntity.ok().body(Map.of("status", HttpStatus.NOT_FOUND.value(), "message", "No months exceeding 1000 spendings found for user: " + username));
         }
         return ResponseEntity.ok(exceedingSpendings);
     }
@@ -136,8 +137,7 @@ public class CaloriesDataController {
     @GetMapping("/user/{username}/total-calories-week")
     public ResponseEntity<?> getTotalCaloriesPerDayForWeek(@PathVariable String username) {
         if (!userService.doesUserExists(username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User with username " + username + " does not exist.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with username " + username + " does not exist.");
         }
 
         Map<LocalDate, Integer> totalCaloriesForWeek = caloriesDataService.getTotalCaloriesPerDayForWeek(username);
@@ -149,8 +149,7 @@ public class CaloriesDataController {
     @GetMapping("/user/{username}/exceed-calorie-threshold-total")
     public ResponseEntity<?> getExceedingDaysCountTotal(@PathVariable String username) {
         if (!userService.doesUserExists(username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User with username " + username + " does not exist.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with username " + username + " does not exist.");
         }
         int exceedingDaysCount = caloriesDataService.countDaysExceedingThresholdTotal(username);
         return ResponseEntity.ok(exceedingDaysCount);
@@ -159,8 +158,7 @@ public class CaloriesDataController {
     @GetMapping("/user/{username}/total-expenditure-week")
     public ResponseEntity<?> getTotalExpenditureForWeek(@PathVariable String username) {
         if (!userService.doesUserExists(username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User with username " + username + " does not exist.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with username " + username + " does not exist.");
         }
         int totalExpenditure = caloriesDataService.calculateTotalExpenditureForWeek(username);
 
@@ -168,13 +166,9 @@ public class CaloriesDataController {
     }
 
     @GetMapping("/user/{username}/filter-calories-data")
-    public ResponseEntity<?> getCaloriesDataByDate(
-            @PathVariable String username,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate){
+    public ResponseEntity<?> getCaloriesDataByDate(@PathVariable String username, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate) {
         if (!userService.doesUserExists(username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User with username " + username + " does not exist.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with username " + username + " does not exist.");
         }
         try {
             List<CaloriesData> caloriesData = caloriesDataService.filterCaloriesDataByDateRange(username, fromDate, toDate);
@@ -185,14 +179,13 @@ public class CaloriesDataController {
     }
 
     @GetMapping("/admin/report")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAdminReport() {
         try {
             Map<String, Object> report = caloriesDataService.getAdminReport();
             return ResponseEntity.ok(report);
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred while generating the report: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while generating the report: " + ex.getMessage());
         }
     }
 
