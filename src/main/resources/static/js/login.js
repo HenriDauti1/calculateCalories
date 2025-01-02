@@ -2,7 +2,7 @@ const loginForm = document.getElementById('loginForm');
 
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-
+ // Perdor regex patterns per validimin e te dhenave
     const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
     const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*.])[A-Za-z\d!@#$%^&*.]{6,}$/;
@@ -10,13 +10,14 @@ loginForm.addEventListener('submit', async (e) => {
     const identifierError = document.getElementById('identifier-error');
     const passwordError = document.getElementById('password-error');
 
+    //Merr inputin nga user-i ne formen e login-it
     const identifier = document.getElementById('loginIdentifier').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
 
     identifierError.style.display = 'none';
     passwordError.style.display = 'none';
 
-
+//Validimi i inputit (email ose username)
     if (!identifier) {
         identifierError.textContent = 'Username or Email is required.';
         identifierError.style.display = 'block';
@@ -27,6 +28,7 @@ loginForm.addEventListener('submit', async (e) => {
         identifierError.style.display = 'block';
         return;
     }
+//Validimi i passwordit
     if (!password) {
         passwordError.textContent = 'Password is required.';
         passwordError.style.display = 'block';
@@ -37,7 +39,7 @@ loginForm.addEventListener('submit', async (e) => {
         passwordError.style.display = 'block';
         return;
     }
-
+    //Dergimi i POST Request ne login API ne backend
     try {
         const response = await fetch('http://localhost:8080/api/auth/login', {
             method: 'POST', headers: {
@@ -48,6 +50,8 @@ loginForm.addEventListener('submit', async (e) => {
         if (response.ok) {
             const result = await response.json();
             const role = result.role;
+
+            //E con perdoruesin ne faqen perkatese sipas rolit(admin ose user)
             if (role === "ROLE_ADMIN") {
                 window.location.href = "/admin";
             } else if (role === "ROLE_USER") {

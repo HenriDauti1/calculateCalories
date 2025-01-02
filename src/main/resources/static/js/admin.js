@@ -15,13 +15,12 @@ function showSection(sectionId) {
     });
     document.getElementById(sectionId + '-section').classList.add('active');
 }
-
 function loadUsers() {
     const userTable = document.getElementById('userTable');
     fetch("http://localhost:8080/api/users")
         .then(response => response.json())
         .then(users => {
-            userTable.innerHTML = ''; // Clear existing rows
+            userTable.innerHTML = '';
             users.forEach(user => {
                 const row = document.createElement('tr');
                 row.setAttribute('data-id', user.id);

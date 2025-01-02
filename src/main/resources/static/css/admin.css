@@ -132,3 +132,61 @@ th {
     align-items: center;
     margin-bottom: 20px;
 }
+
+
+ table {
+     width: 100%;
+     border-collapse: collapse;
+     margin-bottom: 20px;
+ }
+
+table th, table td {
+    border: 1px solid #095b01;
+    padding: 10px;
+    text-align: left;
+}
+
+table th {
+    background-color: #c3fc9d;
+    color: #053501;
+}
+
+table td {
+    background-color: #f0ffe6;
+}
+
+/*button {*/
+/*    padding: 10px;*/
+/*    background-color: #03a73d;*/
+/*    color: rgb(204, 238, 9);*/
+/*    border: none;*/
+/*    border-radius: 4px;*/
+/*    cursor: pointer;*/
+/*    font-size: 16px;*/
+/*    transition: 0.3s ease;*/
+/*}*/
+
+/*button:hover {*/
+/*    background-color: #39ee3c;*/
+/*    color: rgb(6, 71, 7);*/
+/*    transform: scale(1.02);*/
+/*}*/
+
+.btn-blue {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-blue:hover {
+    background-color: #0056b3;
+}
+
+.btn-red {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-red:hover {
+    background-color: #c82333;
+}
+

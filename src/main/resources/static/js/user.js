@@ -1,5 +1,8 @@
+// URL baze per API dhe header-i i autorizimit
 const API_BASE_URL = "http://localhost:8080/calories";
 const AUTH_HEADER = 'Basic ' + btoa("Admin:Test123!");
+
+// Marrja e te dhenave nga login-i
 const sessionData = document.getElementById('sessionData');
 const username = sessionData.getAttribute('data-username');
 const role = sessionData.getAttribute('data-role');
@@ -17,7 +20,7 @@ function showSection(sectionId) {
     });
     document.getElementById(`${sectionId}-section`).classList.add('active');
 }
-
+//Navigimi neper faqe
 function openModal() {
     document.getElementById('modal').style.display = 'block';
 }
@@ -25,7 +28,8 @@ function openModal() {
 function closeModal() {
     document.getElementById('modal').style.display = 'none';
 }
-
+//Funksionet e shtimit te ushqimeve(kalorive
+// )
 function addFoodEntryToUI(entry) {
     const container = document.getElementById('foodEntries');
     const div = document.createElement('div');
@@ -105,13 +109,13 @@ function getCaloriesData() {
                 return;
             }
 
-            // Calculate today's calories
+            // Llogaritja e kalorive ditore
             const today = new Date().toISOString().split('T')[0];
             const todayCalories = data
                 .filter(entry => entry.dateTime.startsWith(today))
                 .reduce((sum, entry) => sum + entry.calories, 0);
 
-            // Calculate weekly average
+            // Llogaritja e mesatares javore te kalorive
             const oneWeekAgo = new Date();
             oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
             const weeklyData = data.filter(entry => new Date(entry.dateTime) >= oneWeekAgo);
@@ -151,6 +155,7 @@ function filterByDate() {
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
 
+    //Llogaritja e kalorive per periudhen kohore te zgjedhur
     fetch(`${API_BASE_URL}/user/${username}/filter-calories-data?fromDate=${startDate}&toDate=${endDate}`, {
         headers: getAuthHeaders()
     })
@@ -187,5 +192,4 @@ window.onclick = function (event) {
         closeModal();
     }
 };
-
 getCaloriesData();
