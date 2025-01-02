@@ -4,73 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="/static/css/login.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
 <div class="login-container">
     <h1>Login</h1>
     <form id="loginForm" method="POST">
-        <label for="loginIdentifier">Username or Email:</label>
-        <input type="text" id="loginIdentifier" name="identifier" placeholder="Enter your username or email" required>
+        <div class="form-group">
+            <label for="loginIdentifier">Username or Email:</label>
+            <input type="text" id="loginIdentifier" name="identifier" placeholder="Enter your username or email">
+            <span class="error" id="identifier-error"></span>
+        </div>
 
-        <label for="loginPassword">Password:</label>
-        <input type="password" id="loginPassword" name="password" placeholder="Enter your password" required>
+        <div class="form-group">
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" name="password" placeholder="Enter your password">
+            <span class="error" id="password-error"></span>
+        </div>
 
         <button type="submit">Login</button>
     </form>
 
     <div class="register-link">
-        <p>Don't have an account? <a href="./register.html">Register here</a></p>
-    </div>
-
-    <div id="error-message" style="color: red; display: none;">
-        <p>Please enter a valid username or email, and ensure the password is correct.</p>
+        <p>Don't have an account? <a href="/register">Register here</a></p>
     </div>
 </div>
-
-<script>
-    const loginForm = document.getElementById('loginForm');
-    const errorMessage = document.getElementById('error-message');
-
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const identifier = document.getElementById('loginIdentifier').value.trim();
-        const password = document.getElementById('loginPassword').value.trim();
-
-        if (!identifier || !password) {
-            errorMessage.textContent = "Both fields are required.";
-            errorMessage.style.display = "block";
-            return;
-        }
-        errorMessage.style.display = "none";
-
-        try {
-            const response = await fetch('http://localhost:8080/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Basic ' + btoa("Admin" + ':' + "Test123!")
-                },
-                body: JSON.stringify({ identifier, password }),
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                alert(`Welcome, ${result.role}!`);
-                window.location.href = "user.html";
-            } else {
-                const result = await response.json();
-                errorMessage.textContent = result.message || "Invalid username or password.";
-                errorMessage.style.display = "block";
-            }
-        } catch (error) {
-            errorMessage.textContent = "An unexpected error occurred.";
-            errorMessage.style.display = "block";
-
-}
-    });
-
-</script>
+<script src="/js/login.js"></script>
 </body>
 </html>

@@ -1,12 +1,15 @@
 body {
     font-family:Arial, Helvetica, sans-serif;
-    background-color: #eeffab;
-    color: #5e5200;
+    /*background-color: #eeffab;*/
+    /*color: #5e5200;*/
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    background-image: url("../img/background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .register-container {
@@ -15,7 +18,7 @@ body {
     flex-direction: column;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 10px 10px 5px #69af00;
+    /*box-shadow: 10px 10px 5px #69af00;*/
     width: 300px;
     transition: 0.4s ease-in-out;
 }

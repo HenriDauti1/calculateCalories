@@ -1,249 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calorie Tracker Dashboard</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link href="/static/css/user.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Tracker Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/user.css" rel="stylesheet">
 </head>
 <body>
+
 <div class="dashboard">
-  <div class="sidebar">
-    <h2>Calorie Tracker</h2>
-    <ul class="sidebar-menu">
-      <li onclick="showSection('dashboard')" class="active">
-        <i class="fas fa-home"></i> Dashboard
-      </li>
-      <li onclick="showSection('add-calories')">
-        <i class="fas fa-plus"></i> Add Calories
-      </li>
-      <li onclick="showSection('weekly-report')">
-        <i class="fas fa-chart-bar"></i> Weekly Report
-      </li>
-      <li onclick="showSection('custom-period')">
-        <i class="fas fa-calendar"></i> Custom Period
-      </li>
-    </ul>
-  </div>
-  <div class="main-content">
-    <div id="dashboard-section" class="content-section active">
-      <div class="header">
-        <h1>Dashboard Overview</h1>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div>Today’s Calories</div>
-          <div class="stat-value" id="todayCalories">Loading...</div>
+    <div class="sidebar">
+        <h2>Calorie Tracker</h2>
+        <ul class="sidebar-menu">
+            <li onclick="showSection('dashboard')" class="active">
+                <i class="fas fa-home"></i> Dashboard
+            </li>
+            <li onclick="showSection('add-calories')">
+                <i class="fas fa-plus"></i> Add Calories
+            </li>
+            <li onclick="showSection('weekly-report')">
+                <i class="fas fa-chart-bar"></i> Weekly Report
+            </li>
+            <li onclick="showSection('custom-period')">
+                <i class="fas fa-calendar"></i> Custom Period
+            </li>
+            <li>
+                <i class="fas fa-sign-out-alt"></i> Logout
+        </ul>
+    </div>
+    <div class="main-content">
+        <div id="dashboard-section" class="content-section active">
+            <div class="header">
+                <h1>Dashboard Overview</h1>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div>Today’s Calories</div>
+                    <div class="stat-value" id="todayCalories">Loading...</div>
+                </div>
+                <div class="stat-card">
+                    <div>Weekly Average</div>
+                    <div class="stat-value" id="weeklyAverage">Loading...</div>
+                </div>
+                <div class="stat-card">
+                    <div>Monthly Spending</div>
+                    <div class="stat-value" id="monthlySpending">Loading...</div>
+                </div>
+            </div>
+            <div class="card">
+                <canvas id="dashboardChart"></canvas>
+            </div>
         </div>
-        <div class="stat-card">
-          <div>Weekly Average</div>
-          <div class="stat-value" id="weeklyAverage">Loading...</div>
+
+        <div id="add-calories-section" class="content-section">
+            <div class="header">
+                <h1>Add Calories</h1>
+                <button class="add-btn" onclick="openModal()">Add Entry</button>
+            </div>
+            <div class="card">
+                <div id="foodEntries">Loading...</div>
+            </div>
         </div>
-        <div class="stat-card">
-          <div>Monthly Spending</div>
-          <div class="stat-value" id="monthlySpending">Loading...</div>
+
+        <div id="weekly-report-section" class="content-section">
+            <div class="header">
+                <h1>Weekly Report</h1>
+            </div>
+            <div class="card">
+                <canvas id="weeklyChart"></canvas>
+            </div>
         </div>
-      </div>
-      <div class="card">
-        <canvas id="dashboardChart"></canvas>
-      </div>
-    </div>
 
-    <div id="add-calories-section" class="content-section">
-      <div class="header">
-        <h1>Add Calories</h1>
-        <button class="add-btn" onclick="openModal()">Add Entry</button>
-      </div>
-      <div class="card">
-        <div id="foodEntries">Loading...</div>
-      </div>
+        <div id="custom-period-section" class="content-section">
+            <div class="header">
+                <h1>Custom Period Analysis</h1>
+            </div>
+            <div class="date-range">
+                From<input type="date" id="startDate">
+                To<input type="date" id="endDate">
+                <button class="add-btn" onclick="filterByDate()">Filter</button>
+            </div>
+            <div class="card">
+                <canvas id="customChart"></canvas>
+            </div>
+        </div>
     </div>
-
-    <div id="weekly-report-section" class="content-section">
-      <div class="header">
-        <h1>Weekly Report</h1>
-      </div>
-      <div class="card">
-        <canvas id="weeklyChart"></canvas>
-      </div>
-    </div>
-
-    <div id="custom-period-section" class="content-section">
-      <div class="header">
-        <h1>Custom Period Analysis</h1>
-      </div>
-      <div class="date-range">
-        From<input type="date" id="startDate">
-        To<input type="date" id="endDate">
-        <button class="add-btn" onclick="filterByDate()">Filter</button>
-      </div>
-      <div class="card">
-        <canvas id="customChart"></canvas>
-      </div>
-    </div>
-  </div>
 </div>
 
 <div id="modal" class="modal">
-  <div class="modal-content">
-    <h2>Add Food Entry</h2>
-    <form id="foodForm">
-      <div class="form-group">
-        <label>Food Name</label>
-        <input type="text" id="foodName" required>
-      </div>
-      <div class="form-group">
-        <label>Calories</label>
-        <input type="number" id="calories" required>
-      </div>
-      <div class="form-group">
-        <label>Price (€)</label>
-        <input type="number" id="price" step="0.01" required>
-      </div>
-      <button type="submit" class="add-btn">Save</button>
-    </form>
-  </div>
+    <div class="modal-content">
+        <h2>Add Food Entry</h2>
+        <form id="foodForm">
+            <div class="form-group">
+                <label>Food Name</label>
+                <input type="text" id="foodName" required>
+            </div>
+            <div class="form-group">
+                <label>Calories</label>
+                <input type="number" id="calories" required>
+            </div>
+            <div class="form-group">
+                <label>Price (€)</label>
+                <input type="number" id="price" step="0.01" required>
+            </div>
+            <button type="submit" class="add-btn">Save</button>
+        </form>
+    </div>
+</div>
+<div id="sessionData"
+     th:data-username="${username}"
+     th:data-role="${role}"
+     style="display: none;">
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
-<script>
-  const API_BASE_URL = "http://localhost:8080/calories";
-
-  function showSection(sectionId) {
-    document.querySelectorAll('.content-section').forEach(section => {
-      section.classList.remove('active');
-    });
-    document.getElementById(`${sectionId}-section`).classList.add('active');
-  }
-
-  function openModal() {
-    document.getElementById('modal').style.display = 'block';
-  }
-
-  function closeModal() {
-    document.getElementById('modal').style.display = 'none';
-  }
-
-  document.getElementById('foodForm').onsubmit = function(e) {
-    e.preventDefault();
-
-    const entry = {
-      username: 'user',
-      dateTime: new Date().toISOString(),
-      foodName: document.getElementById('foodName').value,
-      calories: parseInt(document.getElementById('calories').value),
-      price: parseFloat(document.getElementById('price').value),
-    };
-
-    fetch(`${API_BASE_URL}/add?username=${entry.username}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(entry),
-    })
-            .then(response => {
-              console.log('Response status:', response.status);
-              console.log('Response headers:', response.headers);
-              if (!response.ok) {
-                return response.text().then(text => { throw new Error(text) });
-              }
-              return response.text();
-            })
-            .then(data => {
-              console.log('Response data:', data);
-              addFoodEntryToUI(data);
-              closeModal();
-              this.reset();
-            })
-            .catch(error => {
-              console.error('Error adding food entry:', error);
-              alert('Failed to add food entry. Please check if the backend endpoint is available and returning valid JSON.');
-            });
-  };
-
-  function addFoodEntryToUI(entry) {
-    const container = document.getElementById('foodEntries');
-    const div = document.createElement('div');
-    div.className = 'food-entry';
-    div.innerHTML = `
-      <div>
-        <div>${entry.foodName}</div>
-        <div>${new Date(entry.dateTime).toLocaleDateString('en-GB')}</div>
-      </div>
-      <div>
-        <div>${entry.calories} cal</div>
-        <div>€${entry.price.toFixed(2)}</div>
-      </div>
-    `;
-    container.insertBefore(div, container.firstChild);
-  }
-
-  function getCaloriesData() {
-    fetch(`${API_BASE_URL}/user/username`)
-            .then(response => response.text())
-            .then(data => {
-              document.getElementById('todayCalories').innerText = `${data.todayCalories} cal`;
-              document.getElementById('weeklyAverage').innerText = `${data.weeklyAverageCalories.toFixed(0)} cal`;
-            })
-            .catch(error => {
-              console.error('Error fetching daily summary:', error);
-              alert('Failed to load daily summary data. Please ensure the backend is running.');
-            });
-
-    fetch(`${API_BASE_URL}/user/username/spendings-exceeding-1000`)
-            .then(response => response.json())
-            .then(data => {
-              document.getElementById('monthlySpending').innerText = `€${data.monthlySpending.toFixed(2)}`;
-            })
-            .catch(error => {
-              console.error('Error fetching monthly spending:', error);
-              alert('Failed to load monthly spending data. Please ensure the backend is running.');
-            });
-  }
-
-  function filterByDate() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-
-    fetch(`${API_BASE_URL}/user/username/filter-calories-data?fromDate=${startDate}&toDate=${endDate}`)
-            .then(response => response.json())
-            .then(data => {
-              const ctx = document.getElementById('customChart').getContext('2d');
-              new Chart(ctx, {
-                type: 'line',
-                data: {
-                  labels: data.map(entry => new Date(entry.dateTime).toLocaleDateString('en-GB')),
-                  datasets: [{
-                    label: 'Calories',
-                    data: data.map(entry => entry.calories),
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    fill: false,
-                  }]
-                },
-                options: {
-                  responsive: true,
-                  plugins: {
-                    legend: { position: 'top' },
-                  }
-                }
-              });
-            })
-            .catch(error => {
-              console.error('Error filtering data by date:', error);
-              alert('Failed to filter data. Please check the date range and backend availability.');
-            });
-  }
-
-  window.onclick = function(event) {
-    if (event.target === document.getElementById('modal')) {
-      closeModal();
-    }
-  };
-
-  getCaloriesData();
-</script>
+<script src="/js/user.js"></script>
 </body>
 </html>
