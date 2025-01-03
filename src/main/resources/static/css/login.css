@@ -1,43 +1,44 @@
 *{
-    background-image: url("../img/background.jpg");
+    background-size: cover;
+    background-color: #eeffab;
+    color: #494212;
+background: transparent;
+}
+body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 14px;
+    background-image: url("../img/login-background.jpeg");
     background-repeat: no-repeat;
     background-size: cover;
-}
-
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    /*background-color: #eeffab;*/
-    /*color: #5e5200;*/
     display: flex;
-    justify-content: center;
+    justify-content: left;
+
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-image: url("../img/background.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
 }
-
 .login-container {
-    background-color: rgb(186, 250, 107);
+    /*background-color: #eeffab;*/
+    margin-left: 180px;
     display: flex;
     flex-direction: column;
     padding: 20px;
     border-radius: 8px;
-    /*box-shadow: 10px 10px 5px #69af00;*/
+    box-shadow: 7px 7px 5px #858f5c;
     width: 300px;
     transition: 0.4s ease-in-out;
+    background: radial-gradient(#dee3bc 0%, #bedf3c 100%, #6b7545 100%);
+
 }
 .login-container:hover {
     transform: scale(1.02);
-}
 
+}
 h1 {
     text-align: center;
     margin-bottom: 20px;
-    color: #006716;
+    color:  #5e5200;
 }
-
 form {
     display: flex;
     flex-direction: column;
@@ -58,44 +59,38 @@ input {
     color: #053501;
     box-sizing: border-box;
 }
-
 input:focus {
     border-color: #39ee3c;
 }
-
 button {
     width: 50%;
     padding: 10px;
-    background-color: #03a73d;
-    color: rgb(204, 238, 9);
+    /*background-color: #03a73d;*/
+    color:  #494212;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
     transition: 0.3s ease;
     margin: 0 auto;
+    background: transparent;
 }
-
 button:hover {
-    background-color: #39ee3c;
-    color: rgb(6, 71, 7);
+    background-color: #83ae6a;
+    color: rgb(5, 55, 6);
     transform: scale(1.02);
 }
-
 .login-link {
     text-align: center;
     margin-top: 15px;
 }
-
 .login-link a {
     color: #029f60;
     text-decoration: none;
 }
-
 .login-link a:hover {
     text-decoration: underline;
 }
-
 .error {
     color: red;
     font-size: 12px;
