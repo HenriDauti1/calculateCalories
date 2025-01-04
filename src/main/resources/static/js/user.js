@@ -13,12 +13,11 @@ function getAuthHeaders() {
         'Authorization': AUTH_HEADER
     };
 }
-
 function showSection(sectionId) {
     document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
     });
-    document.getElementById(`${sectionId}-section`).classList.add('active');
+    document.getElementById(sectionId + '-section').classList.add('active');
 }
 //Navigimi neper faqe
 function openModal() {

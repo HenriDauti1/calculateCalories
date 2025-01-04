@@ -1,57 +1,68 @@
+*{
+    background-size: cover;
+    background-color: #eeffab;
+    color: #1f3c0e;
+    background: transparent;
+}
 body {
-    font-family:Arial, Helvetica, sans-serif;
-    /*background-color: #eeffab;*/
-    /*color: #5e5200;*/
+    font-family:"Times New Roman", Times, serif;
+    font-size: 16px;
+    background: radial-gradient(circle at center, #8db55d, #70a551, #1f3c0e);
+    background-size: 300% 300%;
+    animation: gradientMove 10s ease infinite;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-image: url("../img/background.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
 }
-
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
 .register-container {
-    background-color: rgb(186, 250, 107);
+    background: radial-gradient(circle at center, #c2fa7d, #70a551, #2b4e16);
     display: flex;
     flex-direction: column;
     padding: 20px;
     border-radius: 8px;
-    /*box-shadow: 10px 10px 5px #69af00;*/
+    box-shadow: 10px 10px 5px #70a551;
     width: 300px;
     transition: 0.4s ease-in-out;
 }
 .register-container:hover {
     transform: scale(1.02);
 }
-
 h2 {
     text-align: center;
     margin-bottom: 20px;
-    color: #006716;
+    color: #ccf896;
 }
 .form-row{
     display: flex;
     flex-direction: row;
     gap: 10px;
 }
-
 .form-group {
     margin-bottom: 15px;
     align-items: center;
 }
-
 .form-group label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
 }
-
 .form-group input {
     width: 100%;
     padding: 10px;
-    border: 1px solid #095b01;
+    border: 1px solid #1f3c0e;
     border-radius: 10px;
     box-sizing: border-box;
     background-color: #c3fc9d;
@@ -59,21 +70,19 @@ h2 {
 }
 
 .form-group .error {
-    color: red;
+    color: #321212;
     font-size: 12px;
     display: none;
 }
-
 .button-container {
     display: flex;
     justify-content: center;
 }
-
 button {
     width: 50%;
     padding: 10px;
-    background-color: #03a73d;
-    color: rgb(204, 238, 9);
+    background-color: #1f3c0e;
+    color: rgb(213, 243, 176);
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -93,7 +102,7 @@ button:hover {
 }
 
 .login-link a {
-    color: #029f60;
+    color: #321212;
     text-decoration: none;
 }
 

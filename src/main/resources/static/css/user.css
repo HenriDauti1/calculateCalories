@@ -14,14 +14,25 @@
 .sidebar {
     width: 300px;
     font-size: larger;
-    color: #eceef3;
+    color: #deefc8;
     padding: 20px;
     border-radius: 0px;
     margin-right: 0px;
-    background-image: url("../img/dashboard-background.jpeg");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
+    background: radial-gradient(circle at bottom, #ccf896, #223c23, rgb(115, 155, 214));
+    background-size: 300% 300%;
+    animation: gradientMove 10s ease infinite;
     background-position: center;
+}
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 .sidebar-menu {
     list-style: none;
@@ -47,35 +58,33 @@
 .main-content {
     flex: 1;
     padding: 20px;
-    background-color: #d5f3b0;
+    background-color: #bfea89;
     color: #371414;
-    background: radial-gradient(#333c2d 20%, #668a50 100%, #b6ed96 100%);
-
-
+    background: #daf3cb;
 }
 .header {
-    color: #ccf896;
+    color: #152b08;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 .content-section{
-    color: #1e293b;
+    color: #000000;
     text-align: center;
     display: flex;
     flex-direction: row;
     align-items: center;
 }
 .card {
-    background-color: #ccf896;
+    background-color: #c2fa7d;
     border-radius: 10px;
     padding: 30px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgb(46, 27, 27);
+    box-shadow: 0 2px 4px rgb(31, 60, 14);
 }
 .stats-grid {
-    color: #ccf896;
+    color: #202e0d;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
@@ -99,12 +108,12 @@
     font-size: 24px;
     font-weight: bold;
     margin: 10px 0;
-    color: #ccf896;
+    color: #1f3c0e;
 }
 .add-btn {
-    background-color: #1f3c0e;
-    background: radial-gradient(#333c2d 20%, #668a50 100%, #b6ed96 100%);
-    color: white;
+    background-color: #ffffff;
+    background: radial-gradient(#343732 20%, #41602e 100%, #1f3c0e 100%);
+    color: #ffffff;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -118,12 +127,14 @@
 .date-range {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 .date-range input {
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    background-color: #b5cc9f;
 }
 #foodEntries {
     max-height: 400px;
@@ -133,9 +144,11 @@
     display: flex;
     justify-content: space-between;
     padding: 15px;
-    background-color: #f8fafc;
+    background-color: #a2caa2;
     border-radius: 5px;
     margin-bottom: 10px;
+    border-color: #1f3c0e;
+    color: #1f3c0e;
 }
 .modal {
     display: none;

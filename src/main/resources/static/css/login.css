@@ -1,34 +1,42 @@
 *{
     background-size: cover;
     background-color: #eeffab;
-    color: #494212;
-background: transparent;
+    color: #1f3c0e;
+    background: transparent;
 }
 body {
     font-family: "Times New Roman", Times, serif;
     font-size: 14px;
-    background-image: url("../img/login-background.jpeg");
-    background-repeat: no-repeat;
-    background-size: cover;
+    background: radial-gradient(circle at center,#cae4c5,#ece2b1,#99cc66, #254222);
+    background-size: 300% 300%;
+    animation: gradientMove 10s ease infinite;
     display: flex;
-    justify-content: left;
-
+    justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
 }
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
 .login-container {
-    /*background-color: #eeffab;*/
-    margin-left: 180px;
+
     display: flex;
     flex-direction: column;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 7px 7px 5px #858f5c;
+    box-shadow: 7px 7px 5px #83ae6a;
     width: 300px;
     transition: 0.4s ease-in-out;
-    background: radial-gradient(#dee3bc 0%, #bedf3c 100%, #6b7545 100%);
-
+    background: radial-gradient(  #cbf1c1 0%, #5eb62b 100%, #19a52b 100%);
 }
 .login-container:hover {
     transform: scale(1.02);
@@ -37,7 +45,7 @@ body {
 h1 {
     text-align: center;
     margin-bottom: 20px;
-    color:  #5e5200;
+    color: #1f3c0e;
 }
 form {
     display: flex;
@@ -52,21 +60,20 @@ label {
 
 input {
     padding: 10px;
-    border: 1px solid #095b01;
+    border: 1px solid #1f3c0e;
     border-radius: 10px;
     width: 100%;
-    background-color: #c3fc9d;
-    color: #053501;
+    background-color: #d5f3b0;
+    color: #1f3c0e;
     box-sizing: border-box;
 }
 input:focus {
-    border-color: #39ee3c;
+    border-color: #1f3c0e;
 }
 button {
     width: 50%;
     padding: 10px;
-    /*background-color: #03a73d;*/
-    color:  #494212;
+    color: #1f3c0e;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -77,7 +84,7 @@ button {
 }
 button:hover {
     background-color: #83ae6a;
-    color: rgb(5, 55, 6);
+    color: rgb(31, 60, 14);
     transform: scale(1.02);
 }
 .login-link {
@@ -92,7 +99,7 @@ button:hover {
     text-decoration: underline;
 }
 .error {
-    color: red;
+    color: #7e0c0c;
     font-size: 12px;
     display: none;
 }
