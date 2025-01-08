@@ -11,8 +11,11 @@
 <body>
 <div class="dashboard">
     <div class="sidebar">
-        <h2>Admin Panel</h2>
+        <h2 id="adminPanel"></h2>
         <ul class="sidebar-menu">
+            <li onclick="showSection('reports')">
+                <i class="fas fa-chart-line"></i> Reports
+            </li>
             <li onclick="showSection('overview')">
                 <i class="fas fa-home"></i> Overview
             </li>
@@ -22,9 +25,7 @@
             <li id= "food" onclick="showSection('entries')">
                 <i class="fas fa-utensils"></i> Food Entries
             </li>
-            <li onclick="showSection('reports')">
-                <i class="fas fa-chart-line"></i> Reports
-            </li>
+
             <li onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Logout
             </li>
@@ -32,7 +33,7 @@
     </div>
 
     <div class="main-content">
-        <div id="overview-section" class="content-section active">
+        <div id="overview-section" class="content-section">
             <div class="header">
                 <h1>Dashboard Overview</h1>
             </div>
@@ -80,7 +81,6 @@
                     </tr>
                     </thead>
                     <tbody id="userTable">
-                    <!-- User rows will be dynamically added here -->
                     </tbody>
                 </table>
             </div>
@@ -98,18 +98,17 @@
                         <th>Food Item</th>
                         <th>Calories</th>
                         <th>Price</th>
-                        <th>Date</th>
+                        <th>Date & Time</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- Food entries will be dynamically added here -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <div id="reports-section" class="content-section">
+        <div id="reports-section" class="content-section  active">
             <div class="header">
                 <h1>Reports & Analytics</h1>
             </div>
@@ -127,12 +126,9 @@
                     <thead>
                     <tr>
                         <th>User</th>
-                        <th>Total Spent</th>
-                        <th>Limit Exceeded By</th>
                     </tr>
                     </thead>
                     <tbody id="priceExceededTable">
-                    <!-- Over-budget users will be added here -->
                     </tbody>
                 </table>
             </div>
@@ -145,12 +141,16 @@
      style="display: none;">
 </div>
 <script>
+
+
     function logout(){
         window.location.href = "/logout";
     }
     const sessionData = document.getElementById('sessionData');
     const username = sessionData.getAttribute('data-username');
     const role = sessionData.getAttribute('data-role');
+    const adminPanel = document.getElementById('adminPane');
+    adminPanel.textContent = `Admin Panel - ${username}`;
 
     console.log('Username:', username);
     console.log('Role:', role);

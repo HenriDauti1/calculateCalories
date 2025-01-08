@@ -10,6 +10,7 @@
 <body>
 
 <div class="dashboard">
+
     <div class="sidebar">
         <h2>Calorie Tracker</h2>
         <ul class="sidebar-menu">
@@ -25,10 +26,12 @@
             <li onclick="showSection('custom-period')">
                 <i class="fas fa-calendar"></i> Custom Period
             </li>
-            <li>
+            <li onclick="logout()">
                 <i class="fas fa-sign-out-alt"></i> Logout
+            </li>
         </ul>
     </div>
+
     <div class="main-content">
         <div id="dashboard-section" class="content-section active">
             <div class="header">
@@ -37,15 +40,15 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <div>Today’s Calories</div>
-                    <div class="stat-value" id="todayCalories">Loading...</div>
+                    <div class="stat-value" id="todayCalories"></div>
                 </div>
                 <div class="stat-card">
                     <div>Weekly Average</div>
-                    <div class="stat-value" id="weeklyAverage">Loading...</div>
+                    <div class="stat-value" id="weeklyAverage"></div>
                 </div>
                 <div class="stat-card">
                     <div>Monthly Spending</div>
-                    <div class="stat-value" id="monthlySpending">Loading...</div>
+                    <div class="stat-value" id="monthlySpending"></div>
                 </div>
             </div>
             <div class="card">
@@ -59,7 +62,7 @@
                 <button class="add-btn" onclick="openModal()">Add Entry</button>
             </div>
             <div class="card">
-                <div id="foodEntries">Loading...</div>
+                <div id="foodEntries"></div>
             </div>
         </div>
 
@@ -108,17 +111,18 @@
         </form>
     </div>
 </div>
+
 <div id="sessionData"
      th:data-username="${username}"
      th:data-role="${role}"
      style="display: none;">
 </div>
+
 <script>
-    function logout(){
+    function logout() {
         window.location.href = "/logout";
     }
 </script>
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <script src="/js/user.js"></script>

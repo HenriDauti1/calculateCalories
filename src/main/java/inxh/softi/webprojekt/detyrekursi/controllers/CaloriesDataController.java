@@ -179,7 +179,6 @@ public class CaloriesDataController {
     }
 
     @GetMapping("/admin/report")
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAdminReport() {
         try {
             Map<String, Object> report = caloriesDataService.getAdminReport();

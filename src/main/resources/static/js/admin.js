@@ -1,3 +1,7 @@
+const API_CALORIES_URL = "http://localhost:8080/calories";
+const API_USERS_URL = "http://localhost:8080/api";
+const AUTH_HEADER = 'Basic ' + btoa("Admin:Test123!");
+
 document.addEventListener('DOMContentLoaded', () => {
     loadUsers();
     updateReports();
@@ -9,15 +13,72 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 300000);
 });
 
+$(document).ready(function () {
+    $("#food").on("click", function () {
+        fetch("${API_CALORIES_URL}/data", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `${AUTH_HEADER}`,
+            },
+        })
+            .then((response) => response.json())
+            .then((responseData) => {
+                if (responseData) {
+                    const table = $("#entriesTable").DataTable({
+                        destroy: true,
+                        data: responseData,
+                        columns: [
+                            {data: "username"},
+                            {data: "foodName"},
+                            {data: "calories"},
+                            {data: "price", render: function (data) { return `$${data.toFixed(2)}`; }},
+                            {data: "dateTime", render: function (data) { return new Date(data).toLocaleString(); }},
+                            {
+                                data: "id",
+                                render: function (data) {
+                                    return `
+                                        <button class="action-btn edit-btn" data-id="${data}">Edit</button>
+                                        <button class="action-btn delete-btn" data-id="${data}">Delete</button>
+                                    `;
+                                },
+                            },
+                        ],
+                        lengthChange: false,
+                        pageLength: 8,
+                        order: [[0, "desc"]],
+                        responsive: true,
+                        language: {
+                            search: "Search entries:",
+                            lengthMenu: "Show _MENU_ entries per page",
+                            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                            emptyTable: "No entries found",
+                        },
+                        columnDefs: [{
+                            targets: -1, orderable: false, searchable: false,
+                        }],
+                    });
+
+                } else {
+                    alert("Failed to load food entries.");
+                }
+            })
+            .catch((error) => console.error("Error:", error));
+    });
+});
+
 function showSection(sectionId) {
     document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
     });
     document.getElementById(sectionId + '-section').classList.add('active');
 }
+
 function loadUsers() {
     const userTable = document.getElementById('userTable');
-    fetch("http://localhost:8080/api/users")
+    fetch(`${API_USERS_URL}/users`,{
+            method: 'GET',
+    })
         .then(response => response.json())
         .then(users => {
             userTable.innerHTML = '';
@@ -28,7 +89,8 @@ function loadUsers() {
                     <td>${user.id}</td>
                     <td>${user.firstName}</td>
                     <td>${user.lastName}</td>
-                    <td><a href="#" class="username-link" onclick="showUserCalories('${user.username}')">${user.username}</a></td>
+                    // <td><a href="#" class="username-link" onclick="showUserCalories('${user.username}')">${user.username}</a></td>
+                    <td>${user.username}</td>
                     <td>${user.email}</td>
                     <td>USER</td>
                     <td>
@@ -41,78 +103,78 @@ function loadUsers() {
         });
 }
 
-function makeRowEditable(button) {
-    const row = button.closest('tr');
-    const userId = row.getAttribute('data-id');
-    const cells = row.cells;
+// function makeRowEditable(button) {
+//     const row = button.closest('tr');
+//     const userId = row.getAttribute('data-id');
+//     const cells = row.cells;
+//
+//     if (!row.hasAttribute('data-original')) {
+//         row.setAttribute('data-original', row.innerHTML);
+//     }
+//
+//     row.classList.add('edit-mode');
+//
+//     const editableFields = ['firstName', 'lastName', 'username', 'email'];
+//     editableFields.forEach((field, index) => {
+//         const cell = cells[index + 1];
+//         const currentValue = cell.textContent;
+//         cell.innerHTML = `<input type="text" name="${field}" value="${currentValue}">`;
+//     });
+//
+//     const actionCell = cells[cells.length - 1];
+//     actionCell.innerHTML = `
+//         <button class="btn save-btn" onclick="saveChanges(this)">Save</button>
+//         <button class="btn cancel-btn" onclick="cancelEdit(this)">Cancel</button>
+//     `;
+// }
 
-    if (!row.hasAttribute('data-original')) {
-        row.setAttribute('data-original', row.innerHTML);
-    }
+// function saveChanges(button) {
+//     const row = button.closest('tr');
+//     const userId = row.getAttribute('data-id');
+//     const inputs = row.getElementsByTagName('input');
+//
+//     const updatedUser = {
+//         id: userId,
+//         firstName: inputs[0].value,
+//         lastName: inputs[1].value,
+//         username: inputs[2].value,
+//         email: inputs[3].value
+//     };
+//
+//     fetch(`http://localhost:8080/api/users/${userId}`, {
+//         method: 'PUT', headers: {
+//             'Content-Type': 'application/json',
+//         }, body: JSON.stringify(updatedUser)
+//     })
+//         .then(response => {
+//             if (!response.ok) {
+//                 throw new Error('Update failed');
+//             }
+//             return response.json();
+//         })
+//         .then(data => {
+//             loadUsers();
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//             alert('Failed to update user');
+//         });
+// }
 
-    row.classList.add('edit-mode');
-
-    const editableFields = ['firstName', 'lastName', 'username', 'email'];
-    editableFields.forEach((field, index) => {
-        const cell = cells[index + 1];
-        const currentValue = cell.textContent;
-        cell.innerHTML = `<input type="text" name="${field}" value="${currentValue}">`;
-    });
-
-    const actionCell = cells[cells.length - 1];
-    actionCell.innerHTML = `
-        <button class="btn save-btn" onclick="saveChanges(this)">Save</button>
-        <button class="btn cancel-btn" onclick="cancelEdit(this)">Cancel</button>
-    `;
-}
-
-function saveChanges(button) {
-    const row = button.closest('tr');
-    const userId = row.getAttribute('data-id');
-    const inputs = row.getElementsByTagName('input');
-
-    const updatedUser = {
-        id: userId,
-        firstName: inputs[0].value,
-        lastName: inputs[1].value,
-        username: inputs[2].value,
-        email: inputs[3].value
-    };
-
-    fetch(`http://localhost:8080/api/users/${userId}`, {
-        method: 'PUT', headers: {
-            'Content-Type': 'application/json',
-        }, body: JSON.stringify(updatedUser)
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Update failed');
-            }
-            return response.json();
-        })
-        .then(data => {
-            loadUsers();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to update user');
-        });
-}
-
-function cancelEdit(button) {
-    const row = button.closest('tr');
-    const originalContent = row.getAttribute('data-original');
-
-    if (originalContent) {
-        row.innerHTML = originalContent;
-        row.classList.remove('edit-mode');
-        row.removeAttribute('data-original');
-    }
-}
+// function cancelEdit(button) {
+//     const row = button.closest('tr');
+//     const originalContent = row.getAttribute('data-original');
+//
+//     if (originalContent) {
+//         row.innerHTML = originalContent;
+//         row.classList.remove('edit-mode');
+//         row.removeAttribute('data-original');
+//     }
+// }
 
 function deleteUser(userID) {
     if (confirm('Are you sure you want to delete this user?')) {
-        fetch(`http://localhost:8080/api/users/${userID}`, {
+        fetch(`${API_USERS_URL}/users/${userID}`, {
             method: 'DELETE', headers: {'Content-Type': 'application/json'},
         })
             .then(response => {
@@ -125,7 +187,7 @@ function deleteUser(userID) {
             })
             .then(data => {
                 console.log(data);
-                loadUsers(); // Reload the user list
+                loadUsers();
             })
             .catch(error => {
                 console.error("Error:", error.message);
@@ -134,61 +196,24 @@ function deleteUser(userID) {
     }
 }
 
-function loadFoodEntries() {
-    const entriesTable = document.getElementById('entriesTable');
-    const dateFilter = document.querySelector('#entries-section input[type="date"]').value;
-
-    const fromDate = dateFilter ? `${dateFilter}T00:00:00` : new Date().toISOString().split('T')[0] + 'T00:00:00';
-    const toDate = dateFilter ? `${dateFilter}T23:59:59` : new Date().toISOString().split('T')[0] + 'T23:59:59';
-
-    fetch(`http://localhost:8080/calories/data`,{
-     headers: {
-        'Content-Type': 'application/json', 'Authorization': 'Basic ' + btoa("Admin" + ':' + "Test123!")
-    }
-    })
-        .then(response => response.json())
-        .then(data => {
-            entriesTable.innerHTML = '';
-
-            if (data) {
-                data.forEach(entry => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${entry.username}</td>
-                        <td>${entry.foodName}</td>
-                        <td>${entry.calories}</td>
-                        <td>$${entry.price.toFixed(2)}</td>
-                        <td>${new Date(entry.dateTime).toLocaleString()}</td>
-                        <td>
-                            <button class="btn btn-blue" onclick="editEntry(${entry.id})">Edit</button>
-                            <button class="btn btn-red" onclick="deleteEntry(${entry.id}, '${entry.username}')">Delete</button>
-                        </td>
-                    `;
-                    entriesTable.appendChild(row);
-                });
-            }
-        })
-        .catch(error => console.error('Error loading food entries:', error));
-}
-
-function deleteEntry(entryId, username) {
-    if (confirm('Are you sure you want to delete this entry?')) {
-        fetch(`http://localhost:8080/calories/delete/${entryId}?username=${username}`, {
-            method: 'DELETE'
-        })
-            .then(response => {
-                if (response.ok || response.status === 204) {
-                    // loadFoodEntries();
-                } else {
-                    throw new Error('Failed to delete entry');
-                }
-            })
-            .catch(error => {
-                console.error('Error deleting entry:', error);
-                alert('Failed to delete entry');
-            });
-    }
-}
+// function deleteEntry(entryId, username) {
+//     if (confirm('Are you sure you want to delete this entry?')) {
+//         fetch(`${API_CALORIES_URL}/delete/${entryId}?username=${username}`, {
+//             method: 'DELETE'
+//         })
+//             .then(response => {
+//                 if (response.ok || response.status === 204) {
+//                     // loadFoodEntries();
+//                 } else {
+//                     throw new Error('Failed to delete entry');
+//                 }
+//             })
+//             .catch(error => {
+//                 console.error('Error deleting entry:', error);
+//                 alert('Failed to delete entry');
+//             });
+//     }
+// }
 
 function showUserCalories(username) {
     let modal = document.getElementById('userCaloriesModal');
@@ -261,7 +286,7 @@ function switchTab(tabName) {
 }
 
 function loadUserCaloriesData(username) {
-    fetch(`http://localhost:8080/calories/user/${username}`)
+    fetch(`${API_CALORIES_URL}/user/${username}`)
         .then(response => response.json())
         .then(data => {
             const entriesTable = document.getElementById('userEntriesTable');
@@ -279,7 +304,7 @@ function loadUserCaloriesData(username) {
             });
         });
 
-    fetch(`http://localhost:8080/calories/user/${username}/total-calories-week`)
+    fetch(`${API_CALORIES_URL}/user/${username}/total-calories-week`)
         .then(response => response.json())
         .then(data => {
             const ctx = document.getElementById('userWeeklyChart').getContext('2d');
@@ -304,7 +329,7 @@ function loadUserCaloriesData(username) {
             });
         });
 
-    fetch(`http://localhost:8080/calories/user/${username}/exceeding-2500`)
+    fetch(`${API_CALORIES_URL}/user/${username}/exceeding-2500`)
         .then(response => response.text())
         .then(data => {
             const exceedingList = document.getElementById('exceedingDaysList');
@@ -326,92 +351,120 @@ function loadUserCaloriesData(username) {
 }
 
 function initializeCharts() {
-    const activityCtx = document.getElementById('activityChart').getContext('2d');
-    new Chart(activityCtx, {
-        type: 'line', data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], datasets: [{
-                label: 'Active Users', data: [450, 420, 480, 470, 460, 440, 456], borderColor: '#3b82f6', tension: 0.1
-            }]
+    const weeklyComparisonCtx = document.getElementById('weeklyComparisonChart').getContext('2d');
+    new Chart(weeklyComparisonCtx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: 'This Week',
+                    data: [],
+                    backgroundColor: '#3b82f6'
+                },
+                {
+                    label: 'Last Week',
+                    data: [],
+                    backgroundColor: '#93c5fd'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
     });
 
-    const weeklyCtx = document.getElementById('weeklyComparisonChart').getContext('2d');
-    new Chart(weeklyCtx, {
-        type: 'bar', data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], datasets: [{
-                label: 'This Week', data: [120, 150, 180, 90, 100, 60, 70], backgroundColor: '#3b82f6'
-            }, {
-                label: 'Last Week', data: [100, 120, 140, 80, 90, 50, 60], backgroundColor: '#93c5fd'
+    const averageCaloriesCtx = document.getElementById('averageCaloriesChart').getContext('2d');
+    new Chart(averageCaloriesCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Average Calories'],
+            datasets: [{
+                label: 'Average Calories per User',
+                data: [],
+                backgroundColor: '#3b82f6'
             }]
-        }
-    });
-
-    const avgCtx = document.getElementById('averageCaloriesChart').getContext('2d');
-    new Chart(avgCtx, {
-        type: 'bar', data: {
-            labels: ['User 1', 'User 2', 'User 3', 'User 4', 'User 5'], datasets: [{
-                label: 'Average Daily Calories', data: [2200, 2400, 1900, 2600, 2300], backgroundColor: '#3b82f6'
-            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
     });
 }
 
 function updateReports() {
-    fetch('http://localhost:8080/calories/admin/report')
+
+    fetch(`${API_CALORIES_URL}/admin/report`)
         .then(response => response.json())
         .then(data => {
-            document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = data.totalUsers || 0;
-            document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = data.activeUsers || 0;
-            document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = data.usersOverCalorieLimit || 0;
-            document.querySelector('.stat-card:nth-child(4) .stat-value').textContent = data.usersOverBudget || 0;
+            console.log(data);
 
-            const priceExceededTable = document.getElementById('priceExceededTable');
-            priceExceededTable.innerHTML = '';
+            const getDayOfWeek = (dateString) => {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', { weekday: 'long' });
+            };
 
-            if (data.usersExceedingBudget) {
-                data.usersExceedingBudget.forEach(user => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${user.username}</td>
-                        <td>$${user.totalSpent.toFixed(2)}</td>
-                        <td>$${(user.totalSpent - 1000).toFixed(2)}</td>
-                    `;
-                    priceExceededTable.appendChild(row);
-                });
+            const allDaysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+            const weeklyComparisonChart = Chart.getChart('weeklyComparisonChart');
+            if (weeklyComparisonChart) {
+                const thisWeekData = Object.keys(data.entriesThisWeek).reduce((acc, date) => {
+                    acc[getDayOfWeek(date)] = data.entriesThisWeek[date];
+                    return acc;
+                }, {});
+
+                const lastWeekData = Object.keys(data.entriesLastWeek).reduce((acc, date) => {
+                    acc[getDayOfWeek(date)] = data.entriesLastWeek[date];
+                    return acc;
+                }, {});
+
+                const thisWeekValues = allDaysOfWeek.map(day => thisWeekData[day] || 0);
+                const lastWeekValues = allDaysOfWeek.map(day => lastWeekData[day] || 0);
+
+                weeklyComparisonChart.data.labels = allDaysOfWeek;
+                weeklyComparisonChart.data.datasets[0].data = thisWeekValues;
+                weeklyComparisonChart.data.datasets[1].data = lastWeekValues;
+                weeklyComparisonChart.update();
             }
 
-            updateCharts(data);
+            const userData = data['averageCaloriesPerUser'];
+
+            const averageCaloriesChart = Chart.getChart('averageCaloriesChart');
+            if (averageCaloriesChart) {
+                const labels = Object.keys(userData);
+                const values = Object.values(userData);
+
+                averageCaloriesChart.data.labels = labels;
+                averageCaloriesChart.data.datasets[0].data = values;
+                averageCaloriesChart.update();
+            }
+            const priceExceededTable = document.getElementById('priceExceededTable');
+            priceExceededTable.innerHTML = '';
+            data.usersExceedingMonthlyLimit.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user}</td>
+                `;
+                priceExceededTable.appendChild(row);
+            });
         })
         .catch(error => console.error('Error updating reports:', error));
 }
 
-function updateCharts(data) {
-    const activityChart = Chart.getChart('activityChart');
-    if (activityChart && data.weeklyActivity) {
-        activityChart.data.datasets[0].data = data.weeklyActivity;
-        activityChart.update();
-    }
-
-    const weeklyChart = Chart.getChart('weeklyComparisonChart');
-    if (weeklyChart && data.weeklyComparison) {
-        weeklyChart.data.datasets[0].data = data.weeklyComparison.thisWeek;
-        weeklyChart.data.datasets[1].data = data.weeklyComparison.lastWeek;
-        weeklyChart.update();
-    }
-
-    const avgChart = Chart.getChart('averageCaloriesChart');
-    if (avgChart && data.averageCaloriesPerUser) {
-        const chartData = data.averageCaloriesPerUser;
-        avgChart.data.labels = Object.keys(chartData);
-        avgChart.data.datasets[0].data = Object.values(chartData);
-        avgChart.update();
-    }
-}
-
 function getAllCaloriesData(){
-    fetch("http://localhost:8080/calories/data",{
+    fetch(`${API_CALORIES_URL}/data`,{
         headers: {
-            'Content-Type': 'application/json', 'Authorization': 'Basic ' + btoa("Admin" + ':' + "Test123!")
+            'Content-Type': 'application/json',
+            'Authorization': `${AUTH_HEADER}`,
         },
     })
     .then(response => response.json())
@@ -420,56 +473,4 @@ function getAllCaloriesData(){
     })
 }
 
-$(document).ready(function () {
-    $("#food").on("click", function () {
-        fetch("http://localhost:8080/calories/data", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Basic " + btoa("Admin" + ':' + "Test123!")
-            },
-        })
-            .then((response) => response.json())
-            .then((responseData) => {
-                if (responseData) {
-                    const table = $("#entriesTable").DataTable({
-                        destroy: true,
-                        data: responseData,
-                        columns: [
-                            {data: "username"},
-                            {data: "foodName"},
-                            {data: "calories"},
-                            {data: "price", render: function (data) { return `$${data.toFixed(2)}`; }},
-                            {data: "dateTime", render: function (data) { return new Date(data).toLocaleString(); }},
-                            {
-                                data: "id",
-                                render: function (data) {
-                                    return `
-                                        <button class="action-btn edit-btn" data-id="${data}">Edit</button>
-                                        <button class="action-btn delete-btn" data-id="${data}">Delete</button>
-                                    `;
-                                },
-                            },
-                        ],
-                        lengthChange: false,
-                        pageLength: 8,
-                        order: [[0, "desc"]],
-                        responsive: true,
-                        language: {
-                            search: "Search entries:",
-                            lengthMenu: "Show _MENU_ entries per page",
-                            info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                            emptyTable: "No entries found",
-                        },
-                        columnDefs: [{
-                            targets: -1, orderable: false, searchable: false,
-                        }],
-                    });
 
-                } else {
-                    alert("Failed to load food entries.");
-                }
-            })
-            .catch((error) => console.error("Error:", error));
-    });
-});

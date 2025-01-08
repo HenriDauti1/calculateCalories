@@ -9,16 +9,17 @@ const role = sessionData.getAttribute('data-role');
 
 function getAuthHeaders() {
     return {
-        'Content-Type': 'application/json',
-        'Authorization': AUTH_HEADER
+        'Content-Type': 'application/json', 'Authorization': AUTH_HEADER
     };
 }
+
 function showSection(sectionId) {
     document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
     });
     document.getElementById(sectionId + '-section').classList.add('active');
 }
+
 //Navigimi neper faqe
 function openModal() {
     document.getElementById('modal').style.display = 'block';
@@ -27,6 +28,7 @@ function openModal() {
 function closeModal() {
     document.getElementById('modal').style.display = 'none';
 }
+
 //Funksionet e shtimit te ushqimeve(kalorive
 // )
 function addFoodEntryToUI(entry) {
@@ -73,9 +75,7 @@ document.getElementById('foodForm').onsubmit = function (e) {
     };
 
     fetch(`${API_BASE_URL}/add?username=${entry.username}`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(entry),
+        method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(entry),
     })
         .then(response => {
             if (!response.ok) {
@@ -107,6 +107,7 @@ function getCaloriesData() {
                 document.getElementById('weeklyAverage').innerText = '0 cal';
                 return;
             }
+            data.forEach(entry => addFoodEntryToUI(entry));
 
             // Llogaritja e kalorive ditore
             const today = new Date().toISOString().split('T')[0];
@@ -118,9 +119,7 @@ function getCaloriesData() {
             const oneWeekAgo = new Date();
             oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
             const weeklyData = data.filter(entry => new Date(entry.dateTime) >= oneWeekAgo);
-            const weeklyAverage = weeklyData.length > 0
-                ? weeklyData.reduce((sum, entry) => sum + entry.calories, 0) / 7
-                : 0;
+            const weeklyAverage = weeklyData.length > 0 ? weeklyData.reduce((sum, entry) => sum + entry.calories, 0) / 7 : 0;
 
             document.getElementById('todayCalories').innerText = `${todayCalories} cal`;
             document.getElementById('weeklyAverage').innerText = `${weeklyAverage.toFixed(0)} cal`;
@@ -150,32 +149,66 @@ function getCaloriesData() {
         });
 }
 
-function filterByDate() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
+let chartInstance = null;
 
-    //Llogaritja e kalorive per periudhen kohore te zgjedhur
+function filterByDate() {
+    const startDate = document.getElementById('startDate').value + 'T00:00:00';
+    const endDate = document.getElementById('endDate').value + 'T23:59:59';
+
     fetch(`${API_BASE_URL}/user/${username}/filter-calories-data?fromDate=${startDate}&toDate=${endDate}`, {
         headers: getAuthHeaders()
     })
         .then(response => response.json())
         .then(data => {
+            if (!Array.isArray(data)) {
+                throw new Error('Invalid data format');
+            }
+
+            const dates = {};
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
+                const dateStr = d.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
+                dates[dateStr] = 0;
+            }
+
+            data.forEach(entry => {
+                const date = new Date(entry.dateTime).toLocaleDateString('en-GB', {
+                    year: 'numeric', month: '2-digit', day: '2-digit'
+                });
+                dates[date] += entry.calories;
+            });
+
+            const labels = Object.keys(dates);
+            const caloriesData = Object.values(dates);
+
             const ctx = document.getElementById('customChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
                 data: {
-                    labels: data.map(entry => new Date(entry.dateTime).toLocaleDateString('en-GB')),
+                    labels: labels,
                     datasets: [{
                         label: 'Calories',
-                        data: data.map(entry => entry.calories),
+                        data: caloriesData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
-                        fill: false,
+                        borderWidth: 1
                     }]
                 },
                 options: {
                     responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
                     plugins: {
-                        legend: {position: 'top'},
+                        legend: { position: 'top' }
                     }
                 }
             });
