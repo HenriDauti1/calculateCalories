@@ -221,4 +221,17 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
         return caloriesDataRepository.findAll();
     }
 
+    @Override
+    public Map<LocalDate, Integer> countEntriesByDateRangeGroupedByDay(LocalDateTime startDate, LocalDateTime endDate) {
+        List<Object[]> results = caloriesDataRepository.countEntriesByDateRangeGroupedByDay(startDate, endDate);
+        Map<LocalDate, Integer> entriesByDay = new HashMap<>();
+        for (Object[] result : results) {
+            java.sql.Date sqlDate = (java.sql.Date) result[0];
+            LocalDate date = sqlDate.toLocalDate();
+            Integer count = ((Number) result[1]).intValue();
+            entriesByDay.put(date, count);
+        }
+        return entriesByDay;
+    }
+
 }

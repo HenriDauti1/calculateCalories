@@ -35,4 +35,6 @@ public interface CaloriesDataService {
     Map<String, Object> getAdminReport();
 
     List<CaloriesData> getAllCaloriesData();
+
+    Map<LocalDate, Integer> countEntriesByDateRangeGroupedByDay(LocalDateTime startDate, LocalDateTime endDate);
 }

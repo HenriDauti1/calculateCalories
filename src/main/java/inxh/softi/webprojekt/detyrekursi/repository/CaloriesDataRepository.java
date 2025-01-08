@@ -22,4 +22,9 @@ public interface CaloriesDataRepository extends JpaRepository<CaloriesData, Long
 
     @Query("SELECT c.username FROM CaloriesData c " + "WHERE c.dateTime BETWEEN :startDate AND :endDate " + "GROUP BY c.username " + "HAVING SUM(c.price) > 1000")
     List<String> findUsersExceedingMonthlyLimit(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT DATE(c.dateTime), COUNT(c) FROM CaloriesData c WHERE c.dateTime BETWEEN :startDate AND :endDate GROUP BY DATE(c.dateTime)")
+    List<Object[]> countEntriesByDateRangeGroupedByDay(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+
 }
