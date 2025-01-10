@@ -7,7 +7,7 @@
 body {
     font-family: "Times New Roman", Times, serif;
     font-size: 14px;
-    background: radial-gradient(circle at center,#cae4c5,#ece2b1,#99cc66, #254222);
+    background: radial-gradient(circle at center, #8db55d, #70a551, #1f3c0e);
     background-size: 300% 300%;
     animation: gradientMove 10s ease infinite;
     display: flex;
@@ -92,7 +92,7 @@ button:hover {
     margin-top: 15px;
 }
 .login-link a {
-    color: #029f60;
+    color: #1f3c0e;
     text-decoration: none;
 }
 .login-link a:hover {
