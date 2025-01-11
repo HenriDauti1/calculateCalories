@@ -47,16 +47,29 @@ loginForm.addEventListener('submit', async (e) => {
             }, body: JSON.stringify({identifier, password}),
         });
 
+
         if (response.ok) {
             const result = await response.json();
             const role = result.role;
 
-            //E con perdoruesin ne faqen perkatese sipas rolit(admin ose user)
-            if (role === "ROLE_ADMIN") {
-                window.location.href = "/admin";
-            } else if (role === "ROLE_USER") {
-                window.location.href = "/user";
-            }
+            iziToast.success({
+                title: 'Success',
+                message: 'Login successful!',
+                position: 'topCenter',
+                timeout: 800,
+                backgroundColor: 'linear-gradient(135deg, #b5e48c, #76c893)',
+                titleColor: '#0f5000',
+                messageColor: '#0f5000',
+                pauseOnHover: false,
+                onClosing: function() {
+                    //E con perdoruesin ne faqen perkatese sipas rolit(admin ose user)
+                    if (role === "ROLE_ADMIN") {
+                        window.location.href = "/admin";
+                    } else if (role === "ROLE_USER") {
+                        window.location.href = "/user";
+                    }
+                }
+            });
         } else {
             const result = await response.json();
             alert(result.message || 'Login failed.');

@@ -7,7 +7,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -47,7 +46,6 @@ public class CaloriesDataController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedData);
     }
 
-
     @GetMapping("/user/{username}")
     public ResponseEntity<?> getCaloriesDataByUsername(@PathVariable String username) {
         if (!userService.doesUserExists(username)) {
@@ -62,7 +60,6 @@ public class CaloriesDataController {
         List<CaloriesData> data = caloriesDataService.getAllCaloriesData();
         return ResponseEntity.ok(data);
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getCaloriesDataById(@PathVariable Long id) {
@@ -109,7 +106,6 @@ public class CaloriesDataController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Food entry deleted successfully.");
     }
 
-
     @GetMapping("/user/{username}/exceeding-2500")
     public ResponseEntity<?> getDaysExceeding2500(@PathVariable String username) {
         if (!userService.doesUserExists(username)) {
@@ -144,7 +140,6 @@ public class CaloriesDataController {
 
         return ResponseEntity.ok(totalCaloriesForWeek);
     }
-
 
     @GetMapping("/user/{username}/exceed-calorie-threshold-total")
     public ResponseEntity<?> getExceedingDaysCountTotal(@PathVariable String username) {

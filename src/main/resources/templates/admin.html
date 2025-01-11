@@ -9,13 +9,11 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 </head>
 <body>
+
 <div class="dashboard">
     <div class="sidebar">
         <h2 id="adminPanel"></h2>
         <ul class="sidebar-menu">
-            <li onclick="showSection('reports')">
-                <i class="fas fa-chart-line"></i> Reports
-            </li>
             <li onclick="showSection('overview')">
                 <i class="fas fa-home"></i> Overview
             </li>
@@ -25,6 +23,9 @@
             <li id= "food" onclick="showSection('entries')">
                 <i class="fas fa-utensils"></i> Food Entries
             </li>
+            <li onclick="showSection('reports')">
+                <i class="fas fa-chart-line"></i> Reports
+            </li>
 
             <li onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -33,7 +34,7 @@
     </div>
 
     <div class="main-content">
-        <div id="overview-section" class="content-section">
+        <div id="overview-section" class="content-section active">
             <div class="header">
                 <h1>Dashboard Overview</h1>
             </div>
@@ -64,24 +65,20 @@
         <div id="users-section" class="content-section">
             <div class="header">
                 <h1>User Management</h1>
-                <label>
-                    <input type="text" class="search-bar" placeholder="Search users...">
-                </label>
             </div>
             <div class="card">
-                <table>
+                <table id="userTable" class="display">
                     <thead>
-                    <tr><th>ID</th>
+                    <tr>
+                        <th>ID</th>
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Username</th>
                         <th>Email</th>
-                        <th>Role</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
-                    <tbody id="userTable">
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
@@ -108,7 +105,7 @@
             </div>
         </div>
 
-        <div id="reports-section" class="content-section  active">
+        <div id="reports-section" class="content-section">
             <div class="header">
                 <h1>Reports & Analytics</h1>
             </div>
@@ -135,27 +132,12 @@
         </div>
     </div>
 </div>
+
 <div id="sessionData"
      th:data-username="${username}"
      th:data-role="${role}"
      style="display: none;">
 </div>
-<script>
-
-
-    function logout(){
-        window.location.href = "/logout";
-    }
-    const sessionData = document.getElementById('sessionData');
-    const username = sessionData.getAttribute('data-username');
-    const role = sessionData.getAttribute('data-role');
-    const adminPanel = document.getElementById('adminPane');
-    adminPanel.textContent = `Admin Panel - ${username}`;
-
-    console.log('Username:', username);
-    console.log('Role:', role);
-
-</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
