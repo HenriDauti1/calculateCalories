@@ -11,13 +11,13 @@
 }
 @keyframes gradientMove {
     0% {
-        background-position: 0% 50%;
+        background-position: 0 50%;
     }
     50% {
         background-position: 100% 50%;
     }
     100% {
-        background-position: 0% 50%;
+        background-position: 0 50%;
     }
 }
 .sidebar {
@@ -86,7 +86,13 @@
 .content-section.active {
     display: block;
 }
-
+.container{
+    display: flex;
+    flex-direction: row;
+}
+.container .card{
+    width: 50%;
+}
 .header {
     display: flex;
     justify-content: space-between;
@@ -201,4 +207,13 @@ button:disabled {
     opacity: 0.6;
 }
 
+.swal-confirm-button {
+    background-color: #f44336 !important;
+    color: white !important;
+}
+
+.swal-cancel-button {
+    background-color: #4CAF50 !important;
+    color: white !important;
+}
 
