@@ -26,5 +26,4 @@ public interface CaloriesDataRepository extends JpaRepository<CaloriesData, Long
     @Query("SELECT DATE(c.dateTime), COUNT(c) FROM CaloriesData c WHERE c.dateTime BETWEEN :startDate AND :endDate GROUP BY DATE(c.dateTime)")
     List<Object[]> countEntriesByDateRangeGroupedByDay(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
-
 }

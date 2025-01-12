@@ -191,10 +191,10 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
         LocalDateTime endOfLastMonth = YearMonth.now().minusMonths(1).atEndOfMonth().atTime(LocalTime.MAX);
 
         // te dhenat e javes
-        int entriesThisWeek = caloriesDataRepository.countEntriesByDateRange(startOfThisWeekDateTime, LocalDateTime.now());
+        Map<LocalDate, Integer> entriesThisWeek = countEntriesByDateRangeGroupedByDay(startOfThisWeekDateTime, LocalDateTime.now());
 
         // te dhenat e javes se kaluar
-        int entriesLastWeek = caloriesDataRepository.countEntriesByDateRange(startOfLastWeekDateTime, endOfLastWeekDateTime);
+        Map<LocalDate, Integer> entriesLastWeek = countEntriesByDateRangeGroupedByDay(startOfLastWeekDateTime, endOfLastWeekDateTime);
 
         // mesatarja e kalorive per 7 ditet e fundit
         List<CaloriesData> last7DaysData = caloriesDataRepository.findByDateRange(startOfThisWeekDateTime, LocalDateTime.now());
@@ -202,7 +202,7 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
         for (CaloriesData data : last7DaysData) {
             userCaloriesSum.merge(data.getUsername(), data.getCalories(), Integer::sum);
         }
-        double averageCaloriesPerUser = userCaloriesSum.values().stream().mapToInt(Integer::intValue).average().orElse(0.0);
+        userCaloriesSum.values().stream().mapToInt(Integer::intValue).average().orElse(0.0);
 
         // userat qe tejkalojne limitin e kalorive
         List<String> usersExceedingLimit = caloriesDataRepository.findUsersExceedingMonthlyLimit(startOfLastMonth, endOfLastMonth);
@@ -210,7 +210,7 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
         Map<String, Object> report = new HashMap<>();
         report.put("entriesThisWeek", entriesThisWeek);
         report.put("entriesLastWeek", entriesLastWeek);
-        report.put("averageCaloriesPerUser", averageCaloriesPerUser);
+        report.put("averageCaloriesPerUser", userCaloriesSum);
         report.put("usersExceedingMonthlyLimit", usersExceedingLimit);
 
         return report;

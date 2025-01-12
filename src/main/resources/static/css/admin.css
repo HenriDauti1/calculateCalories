@@ -8,25 +8,22 @@
 .dashboard {
     display: flex;
     min-height: 100vh;
-
 }
 @keyframes gradientMove {
     0% {
-        background-position: 0% 50%;
+        background-position: 0 50%;
     }
     50% {
         background-position: 100% 50%;
     }
     100% {
-        background-position: 0% 50%;
+        background-position: 0 50%;
     }
 }
 .sidebar {
-    width: 250px;
-    background-color: #1e293b;
     color: #fefeff;
     padding: 20px;
-    background: radial-gradient(circle at center, #6a7bcf, #15274e, #0c163c);
+    background: #1e293b radial-gradient(circle at center, #6a7bcf, #15274e, #0c163c);
     background-size: 300% 300%;
     animation: gradientMove 10s ease infinite;
 }
@@ -81,48 +78,7 @@
     color: #3b82f6;
     justify-content: center;
 }
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #c8d5e6;
-}
 
-th {
-    background-color: #f8fafc;
-    font-weight: 600;
-}
-
-.btn {
-    padding: 8px 16px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    background: #0c163c;
-}
-
-.btn-blue {
-    background-color: #1063ea;
-    color: rgba(195, 195, 227, 0.84);
-}
-
-.btn-red {
-    background-color: #371414;
-    color: #f4ebeb;
-}
-
-.search-bar {
-    padding: 10px;
-    border: 1px solid #aabad1;
-    border-radius: 5px;
-    width: 100%;
-    max-width: 300px;
-    margin-bottom: 20px;
-}
 .content-section {
     display: none;
 }
@@ -130,21 +86,41 @@ th {
 .content-section.active {
     display: block;
 }
+.container{
+    display: flex;
+    flex-direction: row;
+}
+.container .card{
+    width: 50%;
+}
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
- table {
-     width: 100%;
-     border-collapse: collapse;
-     margin-bottom: 20px;
- }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
 table th, table td {
-    border: 1px solid #0e1732;
     padding: 10px;
-    text-align: left;
+}
+
+#userTable, #entriesTable {
+    width: 100% !important;
+}
+#entriesTable td, #entriesTable th,#userTable td, #userTable th {
+    text-align: center;
+    vertical-align: middle;
+    font-size:18px
+}
+
+.dataTables_wrapper {
+    width: 100%;
 }
 
 table th {
@@ -152,40 +128,92 @@ table th {
     color: #040c27;
 }
 
-table td {
-    background-color: #f0ffe6;
-}
-/*button {*/
-/*    padding: 10px;*/
-/*    background-color: #03a73d;*/
-/*    color: rgb(204, 238, 9);*/
-/*    border: none;*/
-/*    border-radius: 4px;*/
-/*    cursor: pointer;*/
-/*    font-size: 16px;*/
-/*    transition: 0.3s ease;*/
-/*}*/
 
-/*button:hover {*/
-/*    background-color: #39ee3c;*/
-/*    color: rgb(6, 71, 7);*/
-/*    transform: scale(1.02);*/
-/*}*/
-.btn-blue {
+table td button {
+    margin: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+
+table td .btn-blue {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+table td .btn-blue:hover {
+    background-color: #0056b3;
+}
+
+
+table td .btn-red {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+table td .btn-red:hover {
+    background-color: #c82333;
+}
+
+
+table td button:disabled {
+    background-color: #d6d8db;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.action-btn, .btn {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+.btn-blue, .edit-btn {
     background-color: #007bff;
     color: white;
 }
 
-.btn-blue:hover {
+.btn-blue:hover, .edit-btn:hover {
     background-color: #0056b3;
+    transform: scale(1.05);
 }
 
-.btn-red {
+
+.btn-red, .delete-btn {
     background-color: #dc3545;
     color: white;
 }
 
-.btn-red:hover {
+.btn-red:hover, .delete-btn:hover {
     background-color: #c82333;
+    transform: scale(1.05);
+}
+
+
+button:disabled {
+    background-color: #d6d8db;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.swal-confirm-button {
+    background-color: #f44336 !important;
+    color: white !important;
+}
+
+.swal-cancel-button {
+    background-color: #4CAF50 !important;
+    color: white !important;
 }
 

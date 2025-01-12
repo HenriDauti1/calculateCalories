@@ -105,8 +105,19 @@ registerForm.addEventListener('submit', async (e) => {
         });
 
         if (response.ok) {
-            alert('Registration successful!');
-            window.location.href = "/login";
+            iziToast.success({
+                title: 'Success',
+                message: 'Login successful!',
+                position: 'topCenter',
+                timeout: 800,
+                backgroundColor: 'linear-gradient(135deg, #b5e48c, #76c893)',
+                titleColor: '#0f5000',
+                messageColor: '#0f5000',
+                pauseOnHover: false,
+                onClosing: function() {
+                    window.location.href = "/login";
+                }
+            });
         } else {
             const result = await response.json();
             alert(result.message || 'Registration failed.');

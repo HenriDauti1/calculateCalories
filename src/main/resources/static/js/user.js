@@ -258,7 +258,7 @@ function getTodaysCalories() {
 
 }
 
-function getWeeklyCalories() {
+function getWeeklyCalories(){
 
     fetch(`${API_BASE_URL}/user/${username}/total-calories-week`, {
         headers: getAuthHeaders()
