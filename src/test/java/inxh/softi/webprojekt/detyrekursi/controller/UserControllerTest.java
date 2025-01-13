@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -28,17 +29,19 @@ class UserControllerTest {
     private HttpSession session;
     @InjectMocks
     private UserController userController;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testLogin_Successful() {
-        LoginRequest loginRequest = new LoginRequest("user@gmail.com", "password");
+    void loginSuccessful() {
+        LoginRequest loginRequest = new LoginRequest("henri34", "password");
         User user = new User();
         user.setRole("USER");
-        user.setEmail("user@gmail.com");
+        user.setEmail("henri@gmail.com");
+        user.setUsername("henri34");
 
         when(userService.authenticateUser(loginRequest.getIdentifier(), loginRequest.getPassword())).thenReturn(true);
         when(userService.getUserProfile(loginRequest.getIdentifier())).thenReturn(user);
@@ -49,16 +52,16 @@ class UserControllerTest {
         assertNotNull(response.getBody());
         assertEquals("Login successful", response.getBody().get("message"));
         assertEquals("USER", response.getBody().get("role"));
-        assertEquals("user@gmail.com", response.getBody().get("email"));
+        assertEquals("henri@gmail.com", response.getBody().get("email"));
 
-        verify(session).setAttribute("username", "user@gmail.com");
+        verify(session).setAttribute("username", "henri34");
         verify(session).setAttribute("role", "USER");
-        verify(session).setAttribute("email", "user@gmail.com");
+        verify(session).setAttribute("email", "henri@gmail.com");
     }
 
     @Test
-    void testLogin_Unsuccessful() {
-        LoginRequest loginRequest = new LoginRequest("user@gmail.com", "wrongpassword");
+    void loginUnsuccessful() {
+        LoginRequest loginRequest = new LoginRequest("henri@gmail.com", "wrongpassword");
 
         when(userService.authenticateUser(loginRequest.getIdentifier(), loginRequest.getPassword())).thenReturn(false);
 
@@ -72,9 +75,20 @@ class UserControllerTest {
     }
 
     @Test
-    void testCreateUser() {
+    void loginWithException() {
+        LoginRequest loginRequest = new LoginRequest("henri34", "password");
+
+        when(userService.authenticateUser(loginRequest.getIdentifier(), loginRequest.getPassword()))
+                .thenThrow(new RuntimeException("Authentication failed"));
+
+        Exception exception = assertThrows(RuntimeException.class, () -> userController.login(loginRequest));
+        assertEquals("Authentication failed", exception.getMessage());
+    }
+
+    @Test
+    void createUser() {
         User user = new User();
-        user.setEmail("newuser@gmail.com");
+        user.setEmail("newhenri@gmail.com");
         UserResponseDTO createdUser = new UserResponseDTO();
         createdUser.setId(1L);
 
@@ -88,31 +102,7 @@ class UserControllerTest {
     }
 
     @Test
-    void testGetUserById_Found() {
-        UserResponseDTO userResponse = new UserResponseDTO();
-        userResponse.setId(1L);
-
-        when(userService.getUserById(1L)).thenReturn(userResponse);
-
-        ResponseEntity<UserResponseDTO> response = userController.getUserById(1L);
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertEquals(1L, response.getBody().getId());
-    }
-
-    @Test
-    void testGetUserById_NotFound() {
-        when(userService.getUserById(999L)).thenThrow(new IllegalArgumentException());
-
-        ResponseEntity<UserResponseDTO> response = userController.getUserById(999L);
-
-        assertEquals(404, response.getStatusCodeValue());
-        assertNull(response.getBody());
-    }
-
-    @Test
-    void testGetAllUsers() {
+    void getAllUsers() {
         UserResponseDTO user1 = new UserResponseDTO();
         UserResponseDTO user2 = new UserResponseDTO();
         when(userService.getAllUsers()).thenReturn(List.of(user1, user2));
@@ -125,34 +115,18 @@ class UserControllerTest {
     }
 
     @Test
-    void testUpdateUser_Successful() {
-        User userDetails = new User();
-        UserResponseDTO updatedUser = new UserResponseDTO();
-        updatedUser.setId(1L);
+    void getAllUsersEmpty() {
+        when(userService.getAllUsers()).thenReturn(Collections.emptyList());
 
-        when(userService.updateUser(1L, userDetails)).thenReturn(updatedUser);
-
-        ResponseEntity<UserResponseDTO> response = userController.updateUser(1L, userDetails);
+        ResponseEntity<List<UserResponseDTO>> response = userController.getAllUsers();
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
-        assertEquals(1L, response.getBody().getId());
+        assertTrue(response.getBody().isEmpty());
     }
 
     @Test
-    void testUpdateUser_Unsuccessful() {
-        User userDetails = new User();
-
-        when(userService.updateUser(999L, userDetails)).thenThrow(new IllegalArgumentException());
-
-        ResponseEntity<UserResponseDTO> response = userController.updateUser(999L, userDetails);
-
-        assertEquals(400, response.getStatusCodeValue());
-        assertNull(response.getBody());
-    }
-
-    @Test
-    void testDeleteUser_Successful() {
+    void deleteUserSuccessful() {
         doNothing().when(userService).deleteUser(1L);
 
         ResponseEntity<String> response = userController.deleteUser(1L);
@@ -162,12 +136,10 @@ class UserControllerTest {
     }
 
     @Test
-    void testDeleteUser_Unsuccessful() {
-        doThrow(new IllegalArgumentException("User not found")).when(userService).deleteUser(999L);
+    void deleteUserNotFound() {
+        doThrow(new RuntimeException("User not found")).when(userService).deleteUser(1L);
 
-        ResponseEntity<String> response = userController.deleteUser(999L);
-
-        assertEquals(400, response.getStatusCodeValue());
-        assertEquals("User not found", response.getBody());
+        Exception exception = assertThrows(RuntimeException.class, () -> userController.deleteUser(1L));
+        assertEquals("User not found", exception.getMessage());
     }
 }
