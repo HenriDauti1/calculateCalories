@@ -227,7 +227,6 @@ function getTodayCalories() {
             document.getElementById('todayCalories').innerText = '0 cal';
             document.getElementById('weeklyAverage').innerText = '0 cal';
         });
-
 }
 function getWeeklyCalories() {
 
@@ -334,7 +333,6 @@ function expenditureWarning() {
                 console.log(data.message);
                 return;
             }
-
             console.log(data)
             const currentYearMonth = new Date().toISOString().slice(0, 7);
             const currentMonthExceeding = data[currentYearMonth];
@@ -348,7 +346,6 @@ function expenditureWarning() {
                     timeout: false,
                 });
             }
-
         })
         .catch(error => {
             console.error('Error fetching days:', error);
@@ -359,7 +356,7 @@ function calorieWarning() {
     fetch(`${API_BASE_URL}/user/${username}/exceeding-2500`, {
         headers: getAuthHeaders()
     })
-        .then(response => response.json())
+        .then(response => response.text())
         .then(data => {
             if (data.status === 404) {
                 console.log(data.message);
@@ -383,14 +380,9 @@ function calorieWarning() {
             alert('Failed to load daily calorie data.');
         });
 }
-
 getWeeklyCalories();
 getTodayCalories();
 getTotalWeeklyExpenditure();
 getDaysExceedingCalories();
 expenditureWarning();
 calorieWarning();
-
-
-
-
