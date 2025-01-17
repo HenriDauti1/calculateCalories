@@ -7,6 +7,8 @@
     <link rel="icon" href="/img/icon.png" type="image/png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
     <link href="/css/admin.css" rel="stylesheet">
 </head>
 <body>
@@ -15,53 +17,24 @@
     <div class="sidebar">
         <h2 id="adminPanel"></h2>
         <ul class="sidebar-menu">
-            <li onclick="showSection('overview')">
-                <i class="fas fa-home"></i> Overview
+
+            <li onclick="showSection('reports')">
+                <i class="fas fa-chart-line"></i> Reports
             </li>
             <li onclick="showSection('users')">
                 <i class="fas fa-users"></i> Users
             </li>
-            <li id= "food" onclick="showSection('entries')">
+            <li id="food" onclick="showSection('entries')">
                 <i class="fas fa-utensils"></i> Food Entries
-            </li>
-            <li onclick="showSection('reports')">
-                <i class="fas fa-chart-line"></i> Reports
             </li>
 
             <li onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                <i class="fas fa-sign-out-alt"></i> Logout
             </li>
         </ul>
     </div>
 
     <div class="main-content">
-        <div id="overview-section" class="content-section active">
-            <div class="header">
-                <h1>Dashboard Overview</h1>
-            </div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div>Total Users</div>
-                    <div class="stat-value">1,234</div>
-                </div>
-                <div class="stat-card">
-                    <div>Active Today</div>
-                    <div class="stat-value">456</div>
-                </div>
-                <div class="stat-card">
-                    <div>Over Calorie Limit</div>
-                    <div class="stat-value">78</div>
-                </div>
-                <div class="stat-card">
-                    <div>Over Budget</div>
-                    <div class="stat-value">23</div>
-                </div>
-            </div>
-            <div class="card">
-                <h2>Weekly Activity</h2>
-                <canvas id="activityChart"></canvas>
-            </div>
-        </div>
 
         <div id="users-section" class="content-section">
             <div class="header">
@@ -106,7 +79,7 @@
             </div>
         </div>
 
-        <div id="reports-section" class="content-section">
+        <div id="reports-section" class="content-section active">
             <div class="header">
                 <h1>Reports & Analytics</h1>
             </div>

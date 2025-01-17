@@ -16,17 +16,28 @@ public class PageController {
 
     @GetMapping("/register")
     public String register() {
+        String role = (String) session.getAttribute("role");
+        if ("ROLE_ADMIN".equals(role)) {
+            return "redirect:/admin";
+        } else if ("ROLE_USER".equals(role)) {
+            return "redirect:/user";
+        }
         return "register";
     }
 
     @GetMapping("/login")
     public String login() {
+        String role = (String) session.getAttribute("role");
+        if ("ROLE_ADMIN".equals(role)) {
+            return "redirect:/admin";
+        } else if ("ROLE_USER".equals(role)) {
+            return "redirect:/user";
+        }
         return "login";
     }
 
     @GetMapping("/admin")
     public String admin(Model model) {
-
         model.addAttribute("username", session.getAttribute("username"));
         model.addAttribute("role", session.getAttribute("role"));
 
@@ -43,7 +54,6 @@ public class PageController {
 
     @GetMapping("/user")
     public String user(Model model) {
-
         model.addAttribute("username", session.getAttribute("username"));
         model.addAttribute("role", session.getAttribute("role"));
 
@@ -57,6 +67,4 @@ public class PageController {
         }
         return "user";
     }
-
-
 }
