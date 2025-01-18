@@ -182,5 +182,4 @@ public class CaloriesDataController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while generating the report: " + ex.getMessage());
         }
     }
-
 }
