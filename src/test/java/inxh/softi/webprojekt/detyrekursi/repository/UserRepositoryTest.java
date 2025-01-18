@@ -123,4 +123,63 @@ class UserRepositoryTest {
         assertTrue(deletedUser.isEmpty());
     }
 
+
+    @Test
+    public void shouldFailToFindNonExistentUserById() {
+        Optional<User> user = userRepository.findById(999L);
+        assertTrue(user.isEmpty(), "Expected user not to be found with ID 999");
+    }
+
+    @Test
+    public void shouldHandleDeletionOfNonExistentUser() {
+        Optional<User> user = userRepository.findById(999L);
+        assertTrue(user.isEmpty(), "Expected no user to be found with ID 999");
+
+        userRepository.deleteById(999L);
+
+        assertDoesNotThrow(() -> userRepository.deleteById(999L),
+                "Expected no exception when deleting a non-existent user");
+    }
+
+    @Test
+    public void shouldFailToSaveUserWithNullFields() {
+        User user = User.builder()
+                .firstName(null)
+                .lastName("Doe")
+                .username(null)
+                .email("johndoe@example.com")
+                .password("securepassword")
+                .build();
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            userRepository.save(user);
+        });
+
+        assertNotNull(exception, "Expected an exception when saving a user with null fields");
+    }
+
+    @Test
+    public void shouldReturnEmptyListWhenNoUsersExist() {
+        userRepository.deleteAll();
+        assertTrue(userRepository.findAll().isEmpty(), "Expected empty list when no users exist");
+    }
+
+    @Test
+    public void shouldFailToUpdateNonExistentUser() {
+        User user = User.builder()
+                .id(999L)
+                .firstName("NonExistent")
+                .lastName("User")
+                .username("nonexistent")
+                .email("nonexistent@example.com")
+                .password("password")
+                .build();
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            userRepository.save(user);
+        });
+
+        assertNotNull(exception, "Expected an exception when updating a non-existent user");
+    }
+
 }

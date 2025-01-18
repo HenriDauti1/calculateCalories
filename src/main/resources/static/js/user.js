@@ -105,6 +105,8 @@ document.getElementById('foodForm').onsubmit = function (e) {
         })
         .then(data => {
             addFoodEntryToUI(data);
+            calorieWarning();
+            expenditureWarning();
             closeModal();
             this.reset();
         })
@@ -129,31 +131,27 @@ function filterByDate() {
             }
             console.log('Filtered data:', data);
 
-            // Initialize dates object with 'DD/MM/YYYY' format
             const dates = {};
             const start = new Date(startDate);
             console.log('Start date:', start);
             const end = new Date(endDate);
             console.log('End date:', end);
 
-            // Generate all dates between the start and end date in 'DD/MM/YYYY' format
             for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
-                const dateStr = d.toLocaleDateString('en-GB'); // 'DD/MM/YYYY'
+                const dateStr = d.toLocaleDateString('en-GB');
                 console.log('Date string:', dateStr);
                 dates[dateStr] = 0;
             }
             console.log('Dates object:', dates);
 
-            // Aggregate calories for each date
             data.forEach(entry => {
-                const date = new Date(entry.dateTime).toLocaleDateString('en-GB'); // 'DD/MM/YYYY'
+                const date = new Date(entry.dateTime).toLocaleDateString('en-GB');
                 console.log('Date:', date);
                 if (dates[date] !== undefined) {
                     dates[date] += entry.calories;
                 }
             });
 
-            // Prepare data for the chart
             const labels = Object.keys(dates); // 'DD/MM/YYYY'
             const caloriesData = Object.values(dates);
 
@@ -163,7 +161,6 @@ function filterByDate() {
                 chartInstance.destroy();
             }
 
-            // Create a new chart
             chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -204,32 +201,7 @@ window.onclick = function (event) {
 let chartInstance = null;
 let dashInstance = null;
 
-// function getCaloriesData() {
-//
-//     fetch(`${API_BASE_URL}/user/${username}/spendings-exceeding-1000`, {
-//         headers: getAuthHeaders()
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             if (data.status === 404) {
-//                 document.getElementById('monthlySpending').innerText = '€0.00';
-//                 return;
-//             }
-//             console.log('Monthly spending data:', data);
-//             const totalSpending = Object.values(data).reduce((sum, value) => sum + value, 0);
-//             document.getElementById('monthlySpending').innerText = `€${totalSpending.toFixed(2)}`;
-//         })
-//         .catch(error => {
-//             console.error('Error fetching monthly spending:', error);
-//             alert('Failed to load monthly spending data.');
-//         });
-//
-//
-// }
-// getCaloriesData();
-
-
-function getTodaysCalories() {
+function getTodayCalories() {
 
     fetch(`${API_BASE_URL}/user/${username}`, {
         headers: getAuthHeaders()
@@ -255,10 +227,8 @@ function getTodaysCalories() {
             document.getElementById('todayCalories').innerText = '0 cal';
             document.getElementById('weeklyAverage').innerText = '0 cal';
         });
-
 }
-
-function getWeeklyCalories(){
+function getWeeklyCalories() {
 
     fetch(`${API_BASE_URL}/user/${username}/total-calories-week`, {
         headers: getAuthHeaders()
@@ -316,7 +286,6 @@ function getWeeklyCalories(){
             alert('Failed to load weekly calories data.');
         });
 }
-
 function getTotalWeeklyExpenditure() {
 
     fetch(`${API_BASE_URL}/user/${username}/total-expenditure-week`, {
@@ -336,13 +305,84 @@ function getTotalWeeklyExpenditure() {
             alert('Failed to load weekly expenditure data.');
         });
 }
+function getDaysExceedingCalories(){
+    fetch(`${API_BASE_URL}/user/${username}/exceed-calorie-threshold-total`, {
+        headers: getAuthHeaders()
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 404) {
+                console.log(data.message);
+                return;
+            }
+            document.getElementById('weeklyCalorieThreshold').innerText = data;
+        })
+        .catch(error => {
+            console.error('Error fetching days:', error);
+            alert('Failed to load monthly spending data.');
+        });
 
+}
+function expenditureWarning() {
+    fetch(`${API_BASE_URL}/user/${username}/spendings-exceeding-1000`, {
+        headers: getAuthHeaders()
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 404) {
+                console.log(data.message);
+                return;
+            }
+            console.log(data)
+            const currentYearMonth = new Date().toISOString().slice(0, 7);
+            const currentMonthExceeding = data[currentYearMonth];
+            console.log('Current month exceeding:', currentMonthExceeding);
+
+            if (currentMonthExceeding) {
+                iziToast.warning({
+                    title: 'Warning',
+                    message: 'You have exceeded the monthly spending limit of €1000!',
+                    position: 'topRight',
+                    timeout: false,
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching days:', error);
+            alert('Failed to load monthly spending data.');
+        });
+}
+function calorieWarning() {
+    fetch(`${API_BASE_URL}/user/${username}/exceeding-2500`, {
+        headers: getAuthHeaders()
+    })
+        .then(response => response.text())
+        .then(data => {
+            if (data.status === 404) {
+                console.log(data.message);
+                return;
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            const todayExceeding = data[today];
+
+            if (todayExceeding) {
+                iziToast.warning({
+                    title: 'Warning',
+                    message: 'You have exceeded the daily calorie limit of 2500!',
+                    position: 'topRight',
+                    timeout: false,
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching days:', error);
+            alert('Failed to load daily calorie data.');
+        });
+}
 getWeeklyCalories();
-getTodaysCalories();
+getTodayCalories();
 getTotalWeeklyExpenditure();
-// calorieWarning()
-// expenditureWarning();
-
-
-
-
+getDaysExceedingCalories();
+expenditureWarning();
+calorieWarning();

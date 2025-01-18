@@ -102,7 +102,6 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
         return exceedingMonths;
     }
 
-
     @Override
     public Map<LocalDate, Integer> getTotalCaloriesPerDayForWeek(String username) {
         LocalDate currentDate = LocalDate.now();
@@ -130,7 +129,10 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
 
     public int countDaysExceedingThresholdTotal(String username) {
         final int threshold = 2500;
-        List<CaloriesData> allData = caloriesDataRepository.findByUsername(username);
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime startOfWeek = currentDateTime.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).toLocalDate().atStartOfDay();
+        LocalDateTime endOfWeek = startOfWeek.plusDays(6).withHour(23).withMinute(59).withSecond(59);
+        List<CaloriesData> allData = caloriesDataRepository.findByUsernameAndDateRange(username, startOfWeek, endOfWeek);
         Map<LocalDate, Integer> dailyCalories = new HashMap<>();
 
         for (CaloriesData data : allData) {
@@ -150,7 +152,6 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
         }
         return count;
     }
-
 
     @Override
     public int calculateTotalExpenditureForWeek(String username) {
@@ -220,7 +221,6 @@ public class CaloriesDataServiceImpl implements CaloriesDataService {
     public List<CaloriesData> getAllCaloriesData() {
         return caloriesDataRepository.findAll();
     }
-
     @Override
     public Map<LocalDate, Integer> countEntriesByDateRangeGroupedByDay(LocalDateTime startDate, LocalDateTime endDate) {
         List<Object[]> results = caloriesDataRepository.countEntriesByDateRangeGroupedByDay(startDate, endDate);

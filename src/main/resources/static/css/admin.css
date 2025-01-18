@@ -199,6 +199,15 @@ table td button:disabled {
     transform: scale(1.05);
 }
 
+.btn-green, .add-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-green:hover, .add-btn:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
 
 button:disabled {
     background-color: #d6d8db;

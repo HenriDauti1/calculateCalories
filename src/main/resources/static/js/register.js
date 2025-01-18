@@ -107,7 +107,7 @@ registerForm.addEventListener('submit', async (e) => {
         if (response.ok) {
             iziToast.success({
                 title: 'Success',
-                message: 'Login successful!',
+                message: 'Register successful!',
                 position: 'topCenter',
                 timeout: 800,
                 backgroundColor: 'linear-gradient(135deg, #b5e48c, #76c893)',
@@ -120,9 +120,27 @@ registerForm.addEventListener('submit', async (e) => {
             });
         } else {
             const result = await response.json();
-            alert(result.message || 'Registration failed.');
+            iziToast.error({
+                title: 'Error',
+                message: result.message || 'Registration failed.',
+                position: 'topCenter',
+                timeout: 1500,
+                backgroundColor: 'linear-gradient(135deg, #f44336, #e57373)',
+                titleColor: '#ffffff',
+                messageColor: '#ffffff',
+                pauseOnHover: false
+            });;
         }
     } catch (error) {
-        alert('An unexpected error occurred.');
+        iziToast.error({
+            title: 'Error',
+            message: 'An unexpected error occurred.',
+            position: 'topCenter',
+            timeout: 1500,
+            backgroundColor: 'linear-gradient(135deg, #f44336, #e57373)',
+            titleColor: '#ffffff',
+            messageColor: '#ffffff',
+            pauseOnHover: false
+        });
     }
 });

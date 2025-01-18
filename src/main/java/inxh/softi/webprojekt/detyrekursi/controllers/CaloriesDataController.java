@@ -87,7 +87,10 @@ public class CaloriesDataController {
 
         caloriesData.setId(id);
         caloriesData.setUsername(username);
-        caloriesData.setDateTime(LocalDateTime.now());
+        if (caloriesData.getDateTime() == null) {
+            caloriesData.setDateTime(existingData.getDateTime());
+        }
+
         CaloriesData updatedData = caloriesDataService.updateCaloriesData(id, caloriesData);
         return ResponseEntity.ok(updatedData);
     }
