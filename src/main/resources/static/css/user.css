@@ -97,7 +97,6 @@
     border-radius: 10px;
     text-align: center;
     /*box-shadow: 10px 10px 5px #548056;*/
-    /*width: 320px;*/
     transition: 0.4s ease-in-out;
     transform: scale(1.02);
 }

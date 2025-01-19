@@ -248,14 +248,10 @@ function getWeeklyCalories() {
             const labels = Object.keys(data).map(date => {
                 return new Date(date).toLocaleString('en-GB', {weekday: 'long'});
             }).reverse();
-
             const caloriesData = Object.values(data).reverse();
-
-
             if (dashInstance) {
                 dashInstance.destroy();
             }
-
             dashInstance = new Chart(dash, {
                 type: 'bar',
                 data: {
@@ -305,7 +301,7 @@ function getTotalWeeklyExpenditure() {
             alert('Failed to load weekly expenditure data.');
         });
 }
-function getDaysExceedingCalories(){
+function getDaysExceedingCalories() {
     fetch(`${API_BASE_URL}/user/${username}/exceed-calorie-threshold-total`, {
         headers: getAuthHeaders()
     })
@@ -315,14 +311,51 @@ function getDaysExceedingCalories(){
                 console.log(data.message);
                 return;
             }
-            document.getElementById('weeklyCalorieThreshold').innerText = data;
+
+            const dash = document.getElementById('calorieLimitChart').getContext('2d');
+            const labels = Object.keys(data).map(date => {
+                return new Date(date).toLocaleString('en-GB', { weekday: 'long' });
+            }).reverse();
+            const caloriesData = Object.values(data).reverse();
+
+            // Destroy existing chart instance if it exists
+            if (window.dashInstance) {
+                window.dashInstance.destroy();
+            }
+
+            // Create a new Chart.js instance
+            window.dashInstance = new Chart(dash, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Calories',
+                        data: caloriesData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top' }
+                    }
+                }
+            });
         })
         .catch(error => {
             console.error('Error fetching days:', error);
-            alert('Failed to load monthly spending data.');
+            alert('Failed to load calorie limit data.');
         });
-
 }
+
+
 function expenditureWarning() {
     fetch(`${API_BASE_URL}/user/${username}/spendings-exceeding-1000`, {
         headers: getAuthHeaders()
@@ -362,10 +395,8 @@ function calorieWarning() {
                 console.log(data.message);
                 return;
             }
-
             const today = new Date().toISOString().split('T')[0];
             const todayExceeding = data[today];
-
             if (todayExceeding) {
                 iziToast.warning({
                     title: 'Warning',
