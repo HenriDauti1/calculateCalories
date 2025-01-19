@@ -116,7 +116,7 @@ public class CaloriesDataController {
         }
         Map<LocalDate, Integer> exceedingDays = caloriesDataService.getDaysExceeding2500Calories(username);
         if (exceedingDays.isEmpty()) {
-            return ResponseEntity.ok("No days exceeding 2500 calories found for user: " + username);
+            return ResponseEntity.ok(Map.of("status", HttpStatus.NOT_FOUND.value(), "message", "No days exceeding 2500 calories found for user: " + username));
         }
         return ResponseEntity.ok(exceedingDays);
     }

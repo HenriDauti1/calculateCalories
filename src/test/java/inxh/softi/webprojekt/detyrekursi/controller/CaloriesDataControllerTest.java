@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
@@ -250,7 +251,7 @@ class CaloriesDataControllerTest {
         ResponseEntity<?> response = caloriesDataController.getDaysExceeding2500(username);
 
         assertEquals(200, response.getStatusCodeValue(), "Expected HTTP status 200 for no exceeding days case.");
-        assertEquals("No days exceeding 2500 calories found for user: " + username, response.getBody(), "Response body does not match the expected message for no exceeding days.");
+        assertEquals(Map.of("status", HttpStatus.NOT_FOUND.value(), "message", "No days exceeding 2500 calories found for user: " + username), response.getBody(), "Response body does not match the expected message for no exceeding days.");
     }
 
     @Test

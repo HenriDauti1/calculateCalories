@@ -395,6 +395,70 @@
     gap: 15px;
     margin-top: 30px;
 }
+.calorie-limit-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgb(31, 60, 14);
+    border-radius: 10px;
+}
+
+.calorie-limit-table thead {
+    background: linear-gradient(135deg, #b6dd7d, #548056);
+    color: #ffffff;
+}
+
+.calorie-limit-table th,
+.calorie-limit-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #daf3cb;
+}
+
+.calorie-limit-table th {
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.calorie-limit-table td {
+    color: #1f3c0e;
+}
+
+.calorie-limit-table tbody tr {
+    transition: 0.4s ease-in-out;
+    background-color: #ffffff;
+}
+
+.calorie-limit-table tbody tr:hover {
+    background-color: #daf3cb;
+    transform: scale(1.01);
+}
+
+.calorie-limit-table .exceeding {
+    color: #371414;
+    font-weight: 500;
+}
+
+.calorie-limit-table .within-limit {
+    color: #1f3c0e;
+}
+
+.calorie-limit-table tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.calorie-limit-table tr:first-child th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.calorie-limit-table tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+.calorie-limit-table tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
 
 .cancel-btn {
     padding: 12px 24px;
