@@ -317,13 +317,9 @@ function getDaysExceedingCalories() {
                 return new Date(date).toLocaleString('en-GB', { weekday: 'long' });
             }).reverse();
             const caloriesData = Object.values(data).reverse();
-
-            // Destroy existing chart instance if it exists
             if (window.dashInstance) {
                 window.dashInstance.destroy();
             }
-
-            // Create a new Chart.js instance
             window.dashInstance = new Chart(dash, {
                 type: 'bar',
                 data: {
@@ -354,8 +350,6 @@ function getDaysExceedingCalories() {
             alert('Failed to load calorie limit data.');
         });
 }
-
-
 function expenditureWarning() {
     fetch(`${API_BASE_URL}/user/${username}/spendings-exceeding-1000`, {
         headers: getAuthHeaders()
