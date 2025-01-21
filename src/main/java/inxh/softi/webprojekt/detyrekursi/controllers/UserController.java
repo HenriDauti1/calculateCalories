@@ -34,23 +34,29 @@ public class UserController {
 
         if (isAuthenticated) {
             User user = userService.getUserProfile(loginRequest.getIdentifier());
+            String username = user.getUsername();
             String userRole = user.getRole();
 
-            session.setAttribute("username", loginRequest.getIdentifier());
+            session.setAttribute("username", username);
             session.setAttribute("role", userRole);
             session.setAttribute("email", user.getEmail());
             session.setMaxInactiveInterval(30 * 60); // 30 minutes
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("message", "Login successful");
+            responseBody.put("username", username);
             responseBody.put("role", userRole);
             responseBody.put("email", user.getEmail());
 
-            return ResponseEntity.ok().header("X-User-Role", userRole).body(responseBody);
+            return ResponseEntity.ok()
+                    .header("X-User-Role", userRole)
+                    .body(responseBody);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid username or password"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Invalid username or password"));
         }
     }
+
 
     @PostMapping("/users/register")
     public ResponseEntity<UserResponseDTO> createUser(@Validated @RequestBody User user) {
