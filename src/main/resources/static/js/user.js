@@ -37,16 +37,9 @@ document.getElementById('foodForm').onsubmit = function (e) {
             closeModal();
 
             this.reset();
-            window.href.location.reload();
+            window.href.location="/user";
 
         })
-        .catch(error => {
-            iziToast.error({
-                title: 'Error',
-                message: 'Failed to add food entry. Please try again.',
-                position: 'topRight',
-            });
-        });
 };
 
 function getAuthHeaders() {
