@@ -1,3 +1,9 @@
+## Anëtarët e Grupit
+- **Eni Shtëmbari**
+- **Henri Dauti**
+- **Piro Gjikdhima**
+- **Xhorxhia Prenga**
+
 # CalorieTracker 🥗🔥
 
 ## Overview 🌟
